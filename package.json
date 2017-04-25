@@ -1,9 +1,21 @@
 {
   "name": "asmsimulator",
-  "version": "0.5.1",
-  "description": "Simple 8-bit Assembler Simulator in Javascript",
-  "author": "Marco Schweighauser",
+  "version": "0.0.0",
+  "author": "Yannick Ihmels <yannick@ihmels.com>",
+  "contributors": [
+    "Jasmin Kröger",
+    "Tobias Ubben"
+  ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ihmels/asmsimulator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ihmels/asmsimulator/issues"
+  },
+  "homepage": "https://github.com/ihmels/asmsimulator#readme",
+  "description": "Simple 8-bit Assembler Simulator in JavaScript",
   "devDependencies": {
     "grunt": "~1.0.1",
     "grunt-contrib-concat": "~1.0.1",
