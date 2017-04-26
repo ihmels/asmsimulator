@@ -9,14 +9,42 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
     $scope.displayB = false;
     $scope.displayC = false;
     $scope.displayD = false;
-    $scope.speeds = [{speed: 1, desc: "1 HZ"},
-                     {speed: 4, desc: "4 HZ"},
-                     {speed: 8, desc: "8 HZ"},
-                     {speed: 16, desc: "16 HZ"}];
+    $scope.speeds = [{speed: 1, desc: '1 Hz'},
+                     {speed: 4, desc: '4 Hz'},
+                     {speed: 8, desc: '8 Hz'},
+                     {speed: 16, desc: '16 Hz'}];
     $scope.speed = 4;
     $scope.outputStartIndex = 232;
 
-    $scope.code = "; Simple example\n; Writes Hello World to the output\n\n	JMP start\nhello: DB \"Hello World!\" ; Variable\n       DB 0	; String terminator\n\nstart:\n	MOV C, hello    ; Point to var \n	MOV D, 232	; Point to output\n	CALL print\n        HLT             ; Stop execution\n\nprint:			; print(C:*from, D:*to)\n	PUSH A\n	PUSH B\n	MOV B, 0\n.loop:\n	MOV A, [C]	; Get char from var\n	MOV [D], A	; Write to output\n	INC C\n	INC D  \n	CMP B, [C]	; Check if end\n	JNZ .loop	; jump if not\n\n	POP B\n	POP A\n	RET";
+    $scope.code = `; Simple example
+; Writes Hello World to the output
+
+	JMP start
+hello:	DB "Hello World!"	; Variable
+	DB 0			; String terminator
+
+start:
+	MOV C, hello		; Point to var
+	MOV D, 232		; Point to output
+	CALL print
+	HLT			; Stop execution
+
+print:				; print(C:*from, D:*to)
+	PUSH A
+	PUSH B
+	MOV B, 0
+
+.loop:
+	MOV A, [C]		; Get char from var
+	MOV [D], A		; Write to output
+	INC C
+	INC D
+	CMP B, [C]		; Check if end
+	JNZ .loop		; jump if not
+
+	POP B
+	POP A
+	RET`;
 
     $scope.reset = function () {
         cpu.reset();
@@ -97,14 +125,14 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
             $scope.labels = assembly.labels;
 
             if (binary.length > memory.data.length)
-                throw "Binary code does not fit into the memory. Max " + memory.data.length + " bytes are allowed";
+                throw 'Binary code does not fit into the memory. Max ' + memory.data.length + ' bytes are allowed';
 
             for (var i = 0, l = binary.length; i < l; i++) {
                 memory.data[i] = binary[i];
             }
         } catch (e) {
             if (e.line !== undefined) {
-                $scope.error = e.line + " | " + e.error;
+                $scope.error = e.line + ' | ' + e.error;
                 $scope.selectedLine = e.line;
             } else {
                 $scope.error = e.error;

@@ -5,7 +5,7 @@ app.directive('selectLine', [function () {
         link: function (scope, element, attrs, controller) {
             scope.$watch('selectedLine', function () {
                 if (scope.selectedLine >= 0) {
-                    var lines = element[0].value.split("\n");
+                    var lines = element[0].value.split('\n');
 
                     // Calculate start/end
                     var startPos = 0;
@@ -19,7 +19,7 @@ app.directive('selectLine', [function () {
                     var endPos = lines[scope.selectedLine].length + startPos;
 
                     // Chrome / Firefox
-                    if (typeof(element[0].selectionStart) != "undefined") {
+                    if (typeof(element[0].selectionStart) != 'undefined') {
                         element[0].focus();
                         element[0].selectionStart = startPos;
                         element[0].selectionEnd = endPos;
@@ -31,8 +31,8 @@ app.directive('selectLine', [function () {
                         element[0].select();
                         var range = document.selection.createRange();
                         range.collapse(true);
-                        range.moveEnd("character", endPos);
-                        range.moveStart("character", startPos);
+                        range.moveEnd('character', endPos);
+                        range.moveStart('character', startPos);
                         range.select();
                     }
                 }

@@ -2,7 +2,7 @@ app.directive('tabSupport', [function () {
     return {
         restrict: 'A',
         link: function (scope, element, attrs, controller) {
-            element.bind("keydown", function (e) {
+            element.bind('keydown', function (e) {
                 if (e.keyCode === 9) {
                     var val = this.value;
                     var start = this.selectionStart;
