@@ -6,7 +6,7 @@ app.service('memory', [function () {
             var self = this;
 
             if (address < 0 || address >= self.data.length) {
-                throw "Memory access violation at " + address;
+                throw 'Memory access violation at ' + address;
             }
 
             self.lastAccess = address;
@@ -16,7 +16,7 @@ app.service('memory', [function () {
             var self = this;
 
             if (address < 0 || address >= self.data.length) {
-                throw "Memory access violation at " + address;
+                throw 'Memory access violation at ' + address;
             }
 
             self.lastAccess = address;

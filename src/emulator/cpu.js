@@ -4,13 +4,13 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
             var self = this;
 
             if (self.fault === true) {
-                throw "FAULT. Reset to continue.";
+                throw 'FAULT. Reset to continue.';
             }
 
             try {
                 var checkGPR = function(reg) {
                     if (reg < 0 || reg >= self.gpr.length) {
-                        throw "Invalid register: " + reg;
+                        throw 'Invalid register: ' + reg;
                     } else {
                         return reg;
                     }
@@ -18,7 +18,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
 
                 var checkGPR_SP = function(reg) {
                     if (reg < 0 || reg >= 1 + self.gpr.length) {
-                        throw "Invalid register: " + reg;
+                        throw 'Invalid register: ' + reg;
                     } else {
                         return reg;
                     }
@@ -33,12 +33,12 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
 
                         // Not likely to happen, since we always get here after checkOpertion().
                         if (self.sp < self.minSP) {
-                            throw "Stack overflow";
+                            throw 'Stack overflow';
                         } else if (self.sp > self.maxSP) {
-                            throw "Stack underflow";
+                            throw 'Stack underflow';
                         }
                     } else {
-                        throw "Invalid register: " + reg;
+                        throw 'Invalid register: ' + reg;
                     }
                 };
 
@@ -49,7 +49,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                     } else if(reg == self.gpr.length) {
                         return self.sp;
                     } else {
-                        throw "Invalid register: " + reg;
+                        throw 'Invalid register: ' + reg;
                     }
                 };
 
@@ -90,7 +90,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
 
                 var jump = function(newIP) {
                     if (newIP < 0 || newIP >= memory.data.length) {
-                        throw "IP outside memory";
+                        throw 'IP outside memory';
                     } else {
                         self.ip = newIP;
                     }
@@ -99,14 +99,14 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                 var push = function(value) {
                     memory.store(self.sp--, value);
                     if (self.sp < self.minSP) {
-                        throw "Stack overflow";
+                        throw 'Stack overflow';
                     }
                 };
 
                 var pop = function() {
                     var value = memory.load(++self.sp);
                     if (self.sp > self.maxSP) {
-                        throw "Stack underflow";
+                        throw 'Stack underflow';
                     }
 
                     return value;
@@ -114,14 +114,14 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
 
                 var division = function(divisor) {
                     if (divisor === 0) {
-                        throw "Division by 0";
+                        throw 'Division by 0';
                     }
 
                     return Math.floor(self.gpr[0] / divisor);
                 };
 
                 if (self.ip < 0 || self.ip >= memory.data.length) {
-                    throw "Instruction pointer is outside of memory";
+                    throw 'Instruction pointer is outside of memory';
                 }
                 
                 var regTo, regFrom, memFrom, memTo, number;
@@ -567,7 +567,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                         self.ip++;
                         break;
                     default:
-                        throw "Invalid op code: " + instr;
+                        throw 'Invalid op code: ' + instr;
                 }
 
                 return true;
