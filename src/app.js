@@ -1,1 +1,1 @@
-var app = angular.module('ASMSimulator', []);
+var app = angular.module('asmsimulator', []);

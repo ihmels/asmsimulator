@@ -1,5 +1,3 @@
-.gitignore
 .idea
-.DS_Store
-node_modules/*
-ASMSimulator.iml
+node_modules/
+asmimulator.iml
