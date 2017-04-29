@@ -19,8 +19,9 @@
   "devDependencies": {
     "grunt": "~1.0.1",
     "grunt-contrib-concat": "~1.0.1",
-    "grunt-contrib-uglify": "~2.3.0",
+    "grunt-contrib-connect": "~1.0.2",
     "grunt-contrib-jshint": "~1.1.0",
+    "grunt-contrib-uglify": "~2.3.0",
     "grunt-contrib-watch": "~1.0.0"
   }
 }
