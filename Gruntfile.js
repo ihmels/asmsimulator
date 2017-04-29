@@ -8,7 +8,7 @@ module.exports = function(grunt) {
             },
             dist: {
                 src: ['src/app.js', 'src/**/*.js'],
-                dest: 'assets/<%= pkg.name %>.js'
+                dest: 'app/<%= pkg.name %>.js'
             }
         },
         jshint: {
