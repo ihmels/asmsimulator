@@ -2,15 +2,6 @@ module.exports = function(grunt) {
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-        concat: {
-            options: {
-                separator: ';'
-            },
-            dist: {
-                src: ['src/app.js', 'src/**/*.js'],
-                dest: 'app/<%= pkg.name %>.js'
-            }
-        },
         jshint: {
             files: ['Gruntfile.js', 'src/**/*.js']
         },
@@ -20,8 +11,14 @@ module.exports = function(grunt) {
           },
           dist: {
             files: {
-              'app/asmsimulator.js': ['app/asmsimulator.js']
+              'app/asmsimulator.js': ['src/app.js', 'src/**/*.js']
             }
+          }
+        },
+        copy: {
+          dist: {
+            src: 'bower_components/angular/angular.min.js',
+            dest: 'app/angular.js'
           }
         },
         watch: {
@@ -39,12 +36,12 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-connect');
 
-    grunt.registerTask('default', ['jshint', 'concat', 'uglify']);
+    grunt.registerTask('default', ['jshint', 'copy', 'uglify']);
 
 };
