@@ -1,11 +1,7 @@
 {
   "name": "asmsimulator",
   "version": "0.0.0",
-  "author": "Yannick Ihmels <yannick@ihmels.com>",
-  "contributors": [
-    "Jasmin Kröger",
-    "Tobias Ubben"
-  ],
+  "private": true,
   "license": "MIT",
   "repository": {
     "type": "git",
