@@ -1,0 +1,21 @@
+{
+  "name": "asmsimulator",
+  "description": "Simple 8-bit Assembler Simulator in JavaScript",
+  "main": "",
+  "authors": [
+    "Yannick Ihmels",
+    "Jasmin Kröger",
+    "Tobias Ubben"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/ihmels/asmsimulator",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "angular": "1.6.4"
+  }
+}
