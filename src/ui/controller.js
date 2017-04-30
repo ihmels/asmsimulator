@@ -16,35 +16,35 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
     $scope.speed = 4;
     $scope.outputStartIndex = 232;
 
-    $scope.code = `; Simple example
-; Writes Hello World to the output
-
-	JMP start
-hello:	DB "Hello World!"	; Variable
-	DB 0			; String terminator
-
-start:
-	MOV C, hello		; Point to var
-	MOV D, 232		; Point to output
-	CALL print
-	HLT			; Stop execution
-
-print:				; print(C:*from, D:*to)
-	PUSH A
-	PUSH B
-	MOV B, 0
-
-.loop:
-	MOV A, [C]		; Get char from var
-	MOV [D], A		; Write to output
-	INC C
-	INC D
-	CMP B, [C]		; Check if end
-	JNZ .loop		; jump if not
-
-	POP B
-	POP A
-	RET`;
+    $scope.code = '; Simple example\n' +
+        '; Writes Hello World to the output\n' +
+        '\n' +
+        '\tJMP start\n' +
+        'hello:\tDB \"Hello World!\"\t; Variable\n' +
+        '\tDB 0\t\t\t; String terminator\n' +
+        '\n' +
+        'start:\n'+
+        '\tMOV C, hello\t\t; Point to var\n' +
+        '\tMOV D, 232\t\t; Point to output\n' +
+        '\tCALL print\n' +
+        '\tHLT\t\t\t; Stop execution\n' +
+        '\n' +
+        'print:\t\t\t\t; print(C:*from, D:*to)\n' +
+        '\tPUSH A\n' +
+        '\tPUSH B\n' +
+        '\tMOV B, 0\n' +
+        '\n' +
+        '.loop:\n' +
+        '\tMOV A, [C]\t\t; Get char from var\n' +
+        '\tMOV [D], A\t\t; Write to output\n' +
+        '\tINC C\n' +
+        '\tINC D\n' +
+        '\tCMP B, [C]\t\t; Check if end\n' +
+        '\tJNZ .loop\t\t; jump if not\n' +
+        '\n' +
+        '\tPOP B\n' +
+        '\tPOP A\n' +
+        '\tRET';
 
     $scope.reset = function () {
         cpu.reset();
