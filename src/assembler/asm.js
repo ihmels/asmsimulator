@@ -114,7 +114,7 @@ app.service('assembler', ['opcodes', function (opcodes) {
                 } else {
                     var label = parseLabel(input);
                     if (label !== undefined) {
-                        return {type: typeNumber, value: label};
+                        return {type: typeNumber, value: labels[label]};
                     } else {
                         if (typeReg === 'regaddress') {
 
@@ -130,8 +130,8 @@ app.service('assembler', ['opcodes', function (opcodes) {
                         if (isNaN(value)) {
                             throw 'Not a ' + typeNumber + ': ' + value;
                         }
-                        else if (value < 0 || value > 255)
-                            throw typeNumber + ' must have a value between 0 and 255';
+                        else if (value < 0 || value > 65535)
+                            throw typeNumber + ' must have a value between 0 and 65535';
 
                         return {type: typeNumber, value: value};
                     }
@@ -245,7 +245,7 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     else
                                         throw 'MOV does not support this operands';
 
-                                    code.push(opCode, p1.value, p2.value);
+                                    code.push(opCode, p1.value >> 8, p1.value & 0xff, p2.value >> 8, p2.value & 0xff);
                                     break;
                                 case 'ADD':
                                     p1 = getValue(match[op1_group]);
@@ -333,7 +333,7 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     else
                                         throw 'JMP does not support this operands';
 
-                                    code.push(opCode, p1.value);
+                                    code.push(opCode, p1.value >> 8, p1.value & 0xff);
                                     break;
                                 case 'JC':
                                 case 'JB':
@@ -618,7 +618,7 @@ app.service('assembler', ['opcodes', function (opcodes) {
                 }
             }
 
-            // Replace label
+/*            // Replace label
             for (i = 0, l = code.length; i < l; i++) {
                 if (!angular.isNumber(code[i])) {
                     if (code[i] in labels) {
@@ -628,7 +628,7 @@ app.service('assembler', ['opcodes', function (opcodes) {
                         throw {error: 'Undefined label: ' + code[i]};
                     }
                 }
-            }
+            }*/
 
             return {code: code, mapping: mapping, labels: labels};
         }
