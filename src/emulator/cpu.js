@@ -75,14 +75,14 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                     self.zero = false;
                     self.carry = false;
 
-                    if (value >= 256) {
+                    if (value >= 65536) {
                         self.carry = true;
-                        value = value % 256;
+                        value = value % 65536;
                     } else if (value === 0) {
                         self.zero = true;
                     } else if (value < 0) {
                         self.carry = true;
-                        value = 256 - (-value) % 256;
+                        value = 65536 - (-value) % 65536;
                     }
 
                     return value;
@@ -119,6 +119,15 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
 
                     return Math.floor(self.gpr[0] / divisor);
                 };
+                
+                var readMemory = function(address) {
+                    return memory.load(address) << 8 | memory.load(address + 1);
+                };
+                
+                var writeMemory = function(address, data) {
+                    memory.store(address, data >> 8);
+                    memory.store(address + 1, data & 0xff);
+                };
 
                 if (self.ip < 0 || self.ip >= memory.data.length) {
                     throw 'Instruction pointer is outside of memory';
@@ -130,16 +139,16 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                     case opcodes.NONE:
                         return false; // Abort step
                     case opcodes.MOV_REG_TO_REG:
-                        regTo = checkGPR_SP(memory.load(++self.ip));
-                        regFrom = checkGPR_SP(memory.load(++self.ip));
+                        regTo = checkGPR_SP(readMemory(self.ip + 1));
+                        regFrom = checkGPR_SP(readMemory(self.ip + 3));
                         setGPR_SP(regTo,getGPR_SP(regFrom));
-                        self.ip++;
+                        self.ip += 5;
                         break;
                     case opcodes.MOV_ADDRESS_TO_REG:
-                        regTo = checkGPR_SP(memory.load(++self.ip));
-                        memFrom = memory.load(++self.ip);
-                        setGPR_SP(regTo,memory.load(memFrom));
-                        self.ip++;
+                        regTo = checkGPR_SP(readMemory(self.ip + 1));
+                        memFrom = readMemory(self.ip + 3);
+                        setGPR_SP(regTo,readMemory(memFrom));
+                        self.ip += 5;
                         break;
                     case opcodes.MOV_REGADDRESS_TO_REG:
                         regTo = checkGPR_SP(memory.load(++self.ip));
@@ -160,10 +169,10 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                         self.ip++;
                         break;
                     case opcodes.MOV_NUMBER_TO_REG:
-                        regTo = checkGPR_SP(memory.load(++self.ip));
-                        number = memory.load(++self.ip);
+                        regTo = checkGPR_SP(readMemory(self.ip + 1));
+                        number = readMemory(self.ip + 3);
                         setGPR_SP(regTo,number);
-                        self.ip++;
+                        self.ip += 5;
                         break;
                     case opcodes.MOV_NUMBER_TO_ADDRESS:
                         memTo = memory.load(++self.ip);
@@ -264,7 +273,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                         jump(self.gpr[regTo]);
                         break;
                     case opcodes.JMP_ADDRESS:
-                        number = memory.load(++self.ip);
+                        number = readMemory(self.ip + 1);
                         jump(number);
                         break;
                     case opcodes.JC_REGADDRESS:
