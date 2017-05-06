@@ -7,26 +7,31 @@
     <link rel="stylesheet" href="asmsimulator.css">
 </head>
 <body ng-controller="Ctrl">
-    <a href="https://github.com/Schweigi/assembler-simulator"><img style="z-index:1001;position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
     <nav class="navbar navbar-inverse" role="navigation" style="background-color:#428BCA;border:0px;border-radius:0px;">
-        <div class="container">
-            <div class="navbar-header">
-                <div class="btn-group">
-                    <button type="button" class="btn btn-success navbar-btn" ng-click="run()" ng-hide="isRunning">▶️ Run</button>
-                    <button type="button" class="btn btn-default navbar-btn" ng-click="stop()" ng-show="isRunning">⏸ Pause</button>
-                    <button type="button" class="btn btn-default navbar-btn" ng-click="executeStep()" ng-disabled="isRunning">⏩ Step</button>
+        <div class="container-fluid">
+            <div class="navbar-header form-inline">
+                <div class="form-group">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-success navbar-btn" ng-click="run()" ng-hide="isRunning">▶️ Run</button>
+                        <button type="button" class="btn btn-default navbar-btn" ng-click="stop()" ng-show="isRunning">⏸ Pause</button>
+                        <button type="button" class="btn btn-default navbar-btn" ng-click="executeStep()" ng-disabled="isRunning">⏩ Step</button>
+                    </div>
+                    <button type="button" class="btn btn-default navbar-btn" ng-click="reset()">↺ Reset</button>
+                    <div class="input-group">
+                        <div class="input-group-addon">Clock speed</div>
+                        <select ng-model="speed" ng-options="item.speed as item.desc for item in speeds" class="form-control"></select>
+                    </div>
                 </div>
-                <button type="button" class="btn btn-default navbar-btn" ng-click="reset()">↺ Reset</button>
             </div>
             <div class="navbar-header navbar-right">
                 <a class="navbar-brand" style="color:#FFFFFF">Simple 8-bit Assembler Simulator</a>
             </div>
         </div>
     </nav>
-    <div class="container">
+    <div class="container-fluid">
         <div class="alert alert-danger" ng-hide="error === ''">{{ error }}</div>
         <div class="row">
-            <div class="col-lg-7 col-md-6">
+            <div class="col-md-6">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">Code <small>(<a href="./instruction-set.html" target="_blank" style="color: #337AB7">Instruction Set</a>)</small></h4>
@@ -46,7 +51,7 @@
                 </div>
             </div>
             <div class="clearfix visible-xs visible-sm"></div>
-            <div class="col-lg-5 col-md-6">
+            <div class="col-md-6">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">Output</h4>
@@ -93,7 +98,7 @@
                             </tbody>
                         </table>
                         <p class="text-muted">RAM</p>
-                        <div style="width:29em;" class="source-code">
+                        <div class="source-code">
                             <div class="memory-block"
                                  ng-repeat="m in memory.data track by $index"
                                  ng-class="getMemoryCellCss($index)">
@@ -107,12 +112,11 @@
                         </div>
                         <p style="margin-top:5px;">
                             <small>
-                                <span>Clock speed:</span>
-                                <select ng-model="speed" ng-options="item.speed as item.desc for item in speeds"></select>
-                                <span style="margin-left:5px;">Instructions:</span>
+                                Instructions:
                                 <a ng-click="displayInstr = true" ng-hide="displayInstr">Show</a>
                                 <a ng-click="displayInstr = false" ng-show="displayInstr">Hide</a>
-                                <span style="margin-left:5px;">View:</span>
+                                <br>
+                                View:
                                 <a ng-click="displayHex = true" ng-hide="displayHex">Hex</a>
                                 <a ng-click="displayHex = false" ng-show="displayHex">Decimal</a>
 								<br>
@@ -158,8 +162,6 @@
                 </div>
             </div>
         </div>
-        <hr style="margin-top:10px;margin-bottom:10px;"/>
-        <p><small>by Marco Schweighauser (2015) | MIT License | <a href="https://www.mschweighauser.com/make-your-own-assembler-simulator-in-javascript-part1/" target="_blank">Blog</a></small></p>
     </div>
     <script src="angular.js"></script>
     <script src="asmsimulator.js"></script>
