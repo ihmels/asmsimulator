@@ -62,7 +62,7 @@
             <li><a href="http://cs.smith.edu/~thiebaut/ArtOfAssembly/artofasm.html">The Art of Assembly Language Programming</a></li>
             <li><a href="http://www.nasm.us/xdoc/2.10.09/html/nasmdoc3.html">NASM Language Documentation</a></li>
         </ul>
-        <p>The simulator consists of a 16-bit CPU and 1024 bytes of memory (0x0 to 0x400). All instructions (code) and variables (data) needs to fit inside the memory. For simplicity every instruction is 1, 3 or 5 byte and every operand is 2 bytes. Therefore a <a href="#mov">MOV instruction</a> will use 5 bytes of memory. The simulator provides a console output which is memory mapped from 0x3E8 to 0x400. Memory mapped means that every value written to this memory block is visible on the console.</p>
+        <p>The simulator consists of a 16-bit CPU and 1024 bytes of memory (0x0 to 0x3FF). All instructions (code) and variables (data) needs to fit inside the memory. For simplicity every instruction is 1, 3 or 5 byte and every operand is 2 bytes. Therefore a <a href="#mov">MOV instruction</a> will use 5 bytes of memory. The simulator provides a console output which is memory mapped from 0x3E8 to 0x3FF. Memory mapped means that every value written to this memory block is visible on the console.</p>
         <h2 id="syntax">Syntax</h2>
         <p>The syntax is similar as most assemblers are using. Every instruction must be on their own line. Labels are optional and must either start with a letter or a dot (.) and end with a colon (:).</p>
         <pre>label: instruction operands    ; Comment</pre>
