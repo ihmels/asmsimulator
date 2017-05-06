@@ -64,8 +64,8 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                     }
                     
                     var offset = Math.floor(value / 8);
-                    if ( offset > 15 ) {
-                        offset = offset - 32;
+                    if ( offset > 4095 ) {
+                        offset = offset - 8191;
                     }
                     
                     return base+offset;

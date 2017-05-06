@@ -89,7 +89,7 @@ Address using SP register and offset: [SP+2]
 Address using a constant: [100]
 Address using a label: label
 Constant: Any number between 0..255 (8-bit unsigned)
-Offset for indirect addressing: Integer between -16..+15 (sign is mandatory)
+Offset for indirect addressing: Integer between -4096..+4095 (sign is mandatory)
 </pre>
         <h2 id="mov">MOV – Copy a value</h2>
         <p>Copies a value from <em>src</em> to <em>dest</em>. The <a href="#mov">MOV</a> instruction is the only one able to directly modify the memory. <abbr title="Stack pointer">SP</abbr> can be used as operand with MOV.</p>

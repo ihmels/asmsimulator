@@ -95,11 +95,11 @@ app.service('assembler', ['opcodes', function (opcodes) {
 
                 var offset = m * parseInt(input.slice(offset_start + 1), 10);
 
-                if (offset < -16 || offset > 15)
+                if (offset < -4096 || offset > 4095)
                     throw 'Offset must be a value between -16 and 15';
 
                 if (offset < 0) {
-                    offset = 32 + offset; // two's complement representation in 5-bit
+                    offset = 8191 + offset; // two's complement representation in 5-bit
                 }
 
                 return offset * 8 + base; // shift offset 3 bits right and add code for register
