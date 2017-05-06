@@ -1,6 +1,6 @@
 app.service('memory', [function () {
     var memory = {
-        data: Array(256),
+        data: Array(1024),
         lastAccess: -1,
         load: function (address) {
             var self = this;
