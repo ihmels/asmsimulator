@@ -22,6 +22,7 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
         '\tJMP start\n' +
         'hello:\tDB \"Hello World!\"\t; Variable\n' +
         '\tDB 0\t\t\t; String terminator\n' +
+        '\tDB 0\t\t\t; Temporary fix\n' +
         '\n' +
         'start:\n'+
         '\tMOV C, hello\t\t; Point to var\n' +
