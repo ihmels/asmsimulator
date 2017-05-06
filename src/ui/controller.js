@@ -14,7 +14,7 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
                      {speed: 8, desc: '8 Hz'},
                      {speed: 16, desc: '16 Hz'}];
     $scope.speed = 4;
-    $scope.outputStartIndex = 1000;
+    $scope.outputStartIndex = 0x3E0;
 
     $scope.code = '; Simple example\n' +
         '; Writes Hello World to the output\n' +
@@ -26,7 +26,7 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
         '\n' +
         'start:\n'+
         '\tMOV C, hello\t\t; Point to var\n' +
-        '\tMOV D, 1000\t\t; Point to output\n' +
+        '\tMOV D, 0x3E0\t\t; Point to output\n' +
         '\tCALL print\n' +
         '\tHLT\t\t\t; Stop execution\n' +
         '\n' +
