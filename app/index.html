@@ -12,11 +12,11 @@
         <div class="container">
             <div class="navbar-header">
                 <div class="btn-group">
-                    <button type="button" class="btn btn-success navbar-btn" ng-click="run()" ng-hide="isRunning"><span class="glyphicon glyphicon-play"></span> Run</button>
-                    <button type="button" class="btn btn-default navbar-btn" ng-click="stop()" ng-show="isRunning"><span class="glyphicon glyphicon-stop"></span> Stop</button>
-                    <button type="button" class="btn btn-default navbar-btn" ng-click="executeStep()" ng-disabled="isRunning"><span class="glyphicon glyphicon-forward"></span> Step</button>
+                    <button type="button" class="btn btn-success navbar-btn" ng-click="run()" ng-hide="isRunning">▶️ Run</button>
+                    <button type="button" class="btn btn-default navbar-btn" ng-click="stop()" ng-show="isRunning">⏸ Pause</button>
+                    <button type="button" class="btn btn-default navbar-btn" ng-click="executeStep()" ng-disabled="isRunning">⏩ Step</button>
                 </div>
-                <button type="button" class="btn btn-default navbar-btn" ng-click="reset()">Reset</button>
+                <button type="button" class="btn btn-default navbar-btn" ng-click="reset()">↺ Reset</button>
             </div>
             <div class="navbar-header navbar-right">
                 <a class="navbar-brand" style="color:#FFFFFF">Simple 8-bit Assembler Simulator</a>
