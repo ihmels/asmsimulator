@@ -16,9 +16,13 @@ module.exports = function(grunt) {
           }
         },
         copy: {
-          dist: {
+          js: {
             src: 'bower_components/angular/angular.min.js',
             dest: 'app/angular.js'
+          },
+          css: {
+            src: 'bower_components/bootstrap/dist/css/bootstrap.min.css',
+            dest: 'app/bootstrap.css'
           }
         },
         watch: {
