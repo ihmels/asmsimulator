@@ -1,34 +1,71 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Simple 8-bit Assembler - Instruction Set Help</title>
+    <meta charset="UTF-8">
+    <title>Simple 16-bit Assembler Simulator – Instruction Set Help</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="bootstrap.css">
     <link rel="stylesheet" href="asmsimulator.css">
 </head>
 <body>
     <nav class="navbar navbar-inverse" role="navigation" style="background-color:#428BCA;border:0px;border-radius:0px;">
-        <div class="container">
+        <div class="container-fluid">
             <div class="navbar-header">
-                <a type="button" class="btn btn-default navbar-btn" href="index.html">Simulator</a>
+                <a class="navbar-brand" style="color:#FFFFFF">Simple 16-bit Assembler Simulator</a>
             </div>
             <div class="navbar-header navbar-right">
-                <a class="navbar-brand" style="color:#FFFFFF">Simple 8-bit Assembler Simulator</a>
+                <a type="button" class="btn btn-default navbar-btn" href="index.html">Simulator</a>
             </div>
         </div>
     </nav>
     <div class="container">
-        <h4>Introduction</h4>
-        <p>This simulator provides a simplified assembler syntax (based on <a href="http://www.nasm.us" target="_blank">NASM</a>) and is simulating a x86 like cpu. In depth documentation and introduction to assembler can be found on the following websites:</p>
+        <h2>Table of Contents</h2>
         <ul>
-            <li><a href="http://en.wikipedia.org/wiki/Assembly_language" target="_blank">Assembly - Wikipedia</a></li>
-            <li><a href="http://cs.smith.edu/~thiebaut/ArtOfAssembly/artofasm.html" target="_blank">The Art of Assembly Language Programming</a></li>
-            <li><a href="http://www.nasm.us/xdoc/2.10.09/html/nasmdoc3.html" target="_blank">NASM Language Documentation</a></li>
+            <li><a href="#intro">Introduction</a></li>
+            <li><a href="#syntax">Syntax</a></li>
+            <li><a href="#mov">MOV – Copy a value</a></li>
+            <li><a href="#db">DB – Variable</a></li>
+            <li><a href="#math">Math operations</a>
+                <ul>
+                    <li><a href="#addsub">Addition and Subtraction</a></li>
+                    <li><a href="#incdec">Increment and Decrement</a></li>
+                    <li><a href="#muldiv">Multiplication and division</a></li>
+                    <li><a href="#logical">Logical instructions</a></li>
+                    <li><a href="#shift">Shift instructions</a></li>
+                </ul>
+            </li>
+            <li><a href="#cmp">CMP – Compare</a></li>
+            <li><a href="#jumps">Jumps</a>
+                <ul>
+                    <li><a href="#jmp">JMP – Unconditional jump</a>
+                    <li><a href="#jcc">Conditional jumps</a>
+                    <li><a href="#call">CALL – Function call</a>
+                    <li><a href="#ret">RET – Exit a subroutine</a>
+                </ul>
+            </li>
+            <li><a href="#stack">Stack instructions</a>
+                <ul>
+                    <li><a href="#push">PUSH – Push to stack</a>
+                    <li><a href="#pop">POP – Pop from stack</a>
+                </ul>
+            </li>
+            <li><a href="#other">Other instructions</a>
+                <ul>
+                    <li><a href="#hlt">HLT – Stops the processor</a>
+                </ul>
+            </li>
         </ul>
-        <p>The simulator consists of a 8-bit cpu and 256 bytes of memory. All instructions (code) and variables (data) needs to fit inside the memory. For simplicity every instruction (and operand) is 1 byte. Therefore a MOV instruction will use 3 bytes of memory. The simulator provides a console output which is memory mapped from 0xE8 to 0xFF. Memory mapped means that every value written to this memory block is visible on the console.</p>
-        <h4>Syntax</h4>
-        <p>The syntax is similar as most assemblers are using. Every instruction must be on their own line. Labels are optional and must either start with a letter or a dot (.) and end with a colon.</p>
-        <pre>label: instruction operands	; Comment</pre>
+        <h2 id="intro">Introduction</h2>
+        <p>This simulator provides a simplified assembler syntax (based on <a href="http://www.nasm.us">NASM</a>) and is simulating a x86 like CPU. In depth documentation and introduction to assembler can be found on the following websites:</p>
+        <ul>
+            <li><a href="http://en.wikipedia.org/wiki/Assembly_language">Assembly - Wikipedia</a></li>
+            <li><a href="http://cs.smith.edu/~thiebaut/ArtOfAssembly/artofasm.html">The Art of Assembly Language Programming</a></li>
+            <li><a href="http://www.nasm.us/xdoc/2.10.09/html/nasmdoc3.html">NASM Language Documentation</a></li>
+        </ul>
+        <p>The simulator consists of a 16-bit CPU and 1024 bytes of memory (0x0 to 0x400). All instructions (code) and variables (data) needs to fit inside the memory. For simplicity every instruction is 1, 3 or 5 byte and every operand is 2 bytes. Therefore a <a href="#mov">MOV instruction</a> will use 5 bytes of memory. The simulator provides a console output which is memory mapped from 0x3E8 to 0x400. Memory mapped means that every value written to this memory block is visible on the console.</p>
+        <h2 id="syntax">Syntax</h2>
+        <p>The syntax is similar as most assemblers are using. Every instruction must be on their own line. Labels are optional and must either start with a letter or a dot (.) and end with a colon (:).</p>
+        <pre>label: instruction operands    ; Comment</pre>
         <p>Valid number formats for constants are:</p>
 <pre>
 Decimal: 200
@@ -37,14 +74,12 @@ Hex: 0xA4
 Octal: 0o48
 Binary: 101b
 </pre>
-        <p>It is possible to define a number using a character or multiple numbers (see instruction <i>DB</i>) by using a string.</p>
+        <p>It is possible to define a number using a character or multiple numbers (see instruction <a href="#db">DB</a>) by using a string.</p>
 <pre>
 Character: 'A'
 String: "Hello World!"
 </pre>
-        <p>Operands can either be one of the four general purpose registers, stack pointer register, a memory address or a constant.
-		Stack pointer register can only be used as operand in MOV, ADD, SUB, CMP, INC and DEC instructions.
-		Instead of defining an address as a constant or by using a register you can use labels. The assembler will then replace the label with the corresponding constant.</p>
+        <p>Operands can either be one of the four general purpose registers, stack pointer register, a memory address or a constant. Stack pointer register (SP) can only be used as operand in <a href="#mov">MOV</a>, <a href="#addsub">ADD</a>, <a href="#addsub">SUB</a>, <a href="#cmp">CMP</a>, <a href="#incdec">INC</a> and <a href="#incdec">DEC</a> instructions. Instead of defining an address as a constant or by using a register you can use labels. The assembler will then replace the label with the corresponding constant.</p>
 <pre>
 General purpose (GP) register: A, B, C, D
 Stack pointer register: SP
@@ -53,11 +88,11 @@ Address using a GP register and offset: [D-3]
 Address using SP register and offset: [SP+2]
 Address using a constant: [100]
 Address using a label: label
-Constant: Any number between 0..255 (8bit unsigned)
-Offset for indirect addressing: Integer between -16..+15 (sign is mandatory)
+Constant: Any number between 0..255 (8-bit unsigned)
+Offset for indirect addressing: Integer between -4096..+4095 (sign is mandatory)
 </pre>
-        <h4>MOV - Copy a value</h4>
-        <p>Copies a value from <i>src</i> to <i>dest</i>. The MOV instruction is the only one able to directly modify the memory. SP can be used as operand with MOV.</p>
+        <h2 id="mov">MOV – Copy a value</h2>
+        <p>Copies a value from <em>src</em> to <em>dest</em>. The <a href="#mov">MOV</a> instruction is the only one able to directly modify the memory. <abbr title="Stack pointer">SP</abbr> can be used as operand with MOV.</p>
 <pre>
 MOV reg, reg
 MOV reg, address
@@ -65,76 +100,82 @@ MOV reg, constant
 MOV address, reg
 MOV address, constant
 </pre>
-        <h4>DB - Variable</h4>
+        <h2 id="db">DB – Variable</h2>
         <p>Defines a variable. A variable can either be a single number, character or a string.</p>
 <pre>
 DB constant
 </pre>
-        <h4>Math operations</h4>
-        <b>Addition and Subtraction</b>
-        <p>Adds two numbers together or subtract one number form another. This operations will modify the carry and zero flag. SP can be used as operand with ADD and SUB.</p>
+        <h2 id="math">Math operations</h2>
+        <h3 id="addsub">Addition and Subtraction</h3>
+        <p>Adds two numbers together or subtract one number form another. This operations will modify the carry and zero flag. <abbr title="Stack pointer">SP</abbr> can be used as operand with ADD and SUB.</p>
 <pre>
 ADD reg, reg
 ADD reg, address
 ADD reg, constant
+
 SUB reg, reg
 SUB reg, address
 SUB reg, constant
 </pre>
-        <b>Increment and Decrement</b>
-        <p>Increments or decrements a register by one. This operations will modify the carry and zero flag. SP can be used as operand with INC and DEC.</p>
+        <h3 id="incdec">Increment and Decrement</h3>
+        <p>Increments or decrements a register by one. This operations will modify the carry and zero flag. <abbr title="Stack pointer">SP</abbr> can be used as operand with INC and DEC.</p>
 <pre>
 INC reg
 DEC reg
 </pre>
-        <b>Multiplication and division</b>
-        <p>Multiplies or divides the <i>A</i> register with the given value. This operations will modify the carry and zero flag.</p>
+        <h3 id="muldiv">Multiplication and division</h3>
+        <p>Multiplies or divides the <em>A</em> register with the given value. This operations will modify the carry and zero flag.</p>
 <pre>
 MUL reg
 MUL address
 MUL constant
+
 DIV reg
 DIV address
 DIV constant
 </pre>
-        <b>Logical instructions</b>
+        <h3 id="logical">Logical instructions</h3>
         <p>The following logical instructions are supported: AND, OR, XOR, NOT. This operations will modify the carry and zero flag.</p>
 <pre>
 AND reg, reg
 AND reg, address
 AND reg, constant
+
 OR reg, reg
 OR reg, address
 OR reg, constant
+
 XOR reg, reg
 XOR reg, address
 XOR reg, constant
+
 NOT reg
 </pre>
-        <b>Shift instructions</b>
+        <h3 id="shift">Shift instructions</h3>
         <p>The following shift instructions are supported: SHL/SAL and SHR/SAR. As this simulator only supports unsigned numbers SHR and SAR yield the same result. This operations will modify the carry and zero flag.</p>
 <pre>
 SHL reg, reg
 SHL reg, address
 SHL reg, constant
+
 SHR reg, reg
 SHR reg, address
 SHR reg, constant
 </pre>
-        <h4>CMP - Compare</h4>
-        <p>Compares two values and sets the zero flag to true if they are equal. SP can be used as operand with CMP. Use this instruction before a conditional jump.</p>
+        <h2 id="cmp">CMP – Compare</h2>
+        <p>Compares two values and sets the zero flag to true if they are equal. <abbr title="Stack pointer">SP</abbr> can be used as operand with CMP. Use this instruction before a conditional jump.</p>
 <pre>
 CMP reg, reg
 CMP reg, address
 CMP reg, constant
 </pre>
-        <h4>Jumps</h4>
-        <b>JMP - Unconditional jump</b>
+        <h2 id="jumps">Jumps</h2>
+        <h3 id="jmp">JMP – Unconditional jump</h3>
         <p>Let the instruction pointer do a unconditional jump to the defined address.</p>
 <pre>
 JMP address
 </pre>
-        <b>Conditional jumps</b>
+        <h3 id="jcc">Conditional jumps</h3>
         <p>Let the instruction pointer do a conditional jump to the defined address. See the table below for the available conditions.</p>
         <table class="table table-condensed table-striped">
             <thead>
@@ -232,32 +273,32 @@ JMP address
                 </tr>
             </tbody>
         </table>
-        <b>CALL - Function call</b>
+        <h3 id="call">CALL – Function call</h3>
         <p>Call can be used to jump into a subroutine (function). Pushes the instruction address of the next instruction to the stack and jumps to the specified address.</p>
 <pre>
 CALL address
 </pre>
-        <b>RET - Exit a subroutine</b>
-        <p>Exits a subroutines by popping the return address previously pushed by the CALL instruction. Make sure the SP is balanced before calling RET otherwise the instruction pointer will have an ambiguous value.</p>
+        <h3 id="ret">RET – Exit a subroutine</h3>
+        <p>Exits a subroutines by popping the return address previously pushed by the <a href="call">CALL instruction</a>. Make sure the <abbr title="Stack pointer">SP</abbr> is balanced before calling RET otherwise the instruction pointer will have an ambiguous value.</p>
 <pre>
 RET
 </pre>
-        <h4>Stack instructions</h4>
-        <b>PUSH - Push to stack</b>
-        <p>Pushes a value to the stack. The stack grows down and the current position is available in the stack pointer register (SP). This instruction will decrease the SP.</p>
+        <h2 id="stack">Stack instructions</h2>
+        <h3 id="push">PUSH – Push to stack</h3>
+        <p>Pushes a value to the stack. The stack grows down and the current position is available in the <abbr title="Stack pointer">SP</abbr>. This instruction will decrease the SP.</p>
 <pre>
 PUSH reg
 PUSH address
 PUSH constant
 </pre>
-        <b>POP - Pop from stack</b>
-        <p>Pops a value from the stack to a register. This instruction will increase the SP.</p>
+        <h3 id="pop">POP – Pop from stack</h3>
+        <p>Pops a value from the stack to a register. This instruction will increase the <abbr title="Stack pointer">SP</abbr>.</p>
 <pre>
 POP reg
 </pre>
-        <h4>Other instructions</h4>
-        <b>HLT - Stops the processor.</b>
-        <p>Stops operation of the processor. Hit Reset button to reset IP before restarting.</p>
+        <h2 id="other">Other instructions</h2>
+        <h3 id="hlt">HLT – Stops the processor</h3>
+        <p>Stops operation of the processor. Hit Reset button to reset <abbr title="Instruction pointer">IP</abbr> before restarting.</p>
 <pre>
 HLT
 </pre>

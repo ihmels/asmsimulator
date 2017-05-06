@@ -1,51 +1,46 @@
 <!DOCTYPE html>
-<html ng-app="asmsimulator">
+<html data-ng-app="asmsimulator">
 <head>
-    <title>Simple 8-bit Assembler Simulator in Javascript</title>
+    <meta charset="UTF-8">
+    <title>Simple 16-bit Assembler Simulator in Javascript</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="bootstrap.css">
     <link rel="stylesheet" href="asmsimulator.css">
 </head>
-<body ng-controller="Ctrl">
+<body data-ng-controller="Ctrl">
     <nav class="navbar navbar-inverse" role="navigation" style="background-color:#428BCA;border:0px;border-radius:0px;">
         <div class="container-fluid">
             <div class="navbar-header form-inline">
                 <div class="form-group">
                     <div class="btn-group">
-                        <button type="button" class="btn btn-success navbar-btn" ng-click="run()" ng-hide="isRunning">▶️ Run</button>
-                        <button type="button" class="btn btn-default navbar-btn" ng-click="stop()" ng-show="isRunning">⏸ Pause</button>
-                        <button type="button" class="btn btn-default navbar-btn" ng-click="executeStep()" ng-disabled="isRunning">⏩ Step</button>
+                        <button type="button" class="btn btn-success navbar-btn" data-ng-click="run()" data-ng-hide="isRunning">▶️ Run</button>
+                        <button type="button" class="btn btn-default navbar-btn" data-ng-click="stop()" data-ng-show="isRunning">⏸ Pause</button>
+                        <button type="button" class="btn btn-default navbar-btn" data-ng-click="executeStep()" data-ng-disabled="isRunning">⮎ Step</button>
                     </div>
-                    <button type="button" class="btn btn-default navbar-btn" ng-click="reset()">↺ Reset</button>
+                    <button type="button" class="btn btn-default navbar-btn" data-ng-click="reset()">↺ Reset</button>
                     <div class="input-group">
                         <div class="input-group-addon">Clock speed</div>
-                        <select ng-model="speed" ng-options="item.speed as item.desc for item in speeds" class="form-control"></select>
+                        <select data-ng-model="speed" data-ng-options="item.speed as item.desc for item in speeds" class="form-control"></select>
                     </div>
                 </div>
             </div>
             <div class="navbar-header navbar-right">
-                <a class="navbar-brand" style="color:#FFFFFF">Simple 8-bit Assembler Simulator</a>
+                <a href="instruction-set.html" target="_blank" class="btn btn-default navbar-btn">💡 Help</a>
             </div>
         </div>
     </nav>
     <div class="container-fluid">
-        <div class="alert alert-danger" ng-hide="error === ''">{{ error }}</div>
+        <div class="alert alert-danger" data-ng-show="error">{{ error }}</div>
         <div class="row">
             <div class="col-md-6">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h4 class="panel-title">Code <small>(<a href="./instruction-set.html" target="_blank" style="color: #337AB7">Instruction Set</a>)</small></h4>
+                        <h4 class="panel-title">Code</h4>
                     </div>
                     <div class="panel-body">
                         <form role="form">
-                            <textarea id="sourceCode"
-                                      class="form-control source-code"
-                                      style="margin-bottom:5px;"
-                                      rows="35"
-                                      tab-support
-                                      select-line
-                                      ng-model="code"></textarea>
-                            <button type="button" class="btn btn-default" ng-click="assemble()">Assemble</button>
+                            <textarea id="sourceCode" class="form-control source-code" style="margin-bottom:5px;" rows="35" data-tab-support data-select-line data-ng-model="code"></textarea>
+                            <button type="button" class="btn btn-default" data-ng-click="assemble()">Assemble</button>
                         </form>
                     </div>
                 </div>
@@ -58,7 +53,7 @@
                     </div>
                     <div class="panel-body source-code">
                         <div style="float:left;" class="output"
-                             ng-repeat="m in memory.data | startFrom: outputStartIndex track by $index">
+                             data-ng-repeat="m in memory.data | startFrom: outputStartIndex track by $index">
                             <span>{{ getChar(m) }}</span>
                         </div>
                     </div>
@@ -84,10 +79,10 @@
                             </thead>
                             <tbody>
                                 <tr style="text-align:center;" class="source-code">
-                                    <td><div style="margin:auto;" ng-class="displayA && 'marker marker-a'"><small>{{ cpu.gpr[0] | number:displayHex:4 }}</small></div></td>
-                                    <td><div style="margin:auto;" ng-class="displayB && 'marker marker-b'"><small>{{ cpu.gpr[1] | number:displayHex:4 }}</small></div></td>
-                                    <td><div style="margin:auto;" ng-class="displayC && 'marker marker-c'"><small>{{ cpu.gpr[2] | number:displayHex:4 }}</small></div></td>
-                                    <td><div style="margin:auto;" ng-class="displayD && 'marker marker-d'"><small>{{ cpu.gpr[3] | number:displayHex:4 }}</small></div></td>
+                                    <td><div style="margin:auto;" data-ng-class="displayA && 'marker marker-a'"><small>{{ cpu.gpr[0] | number:displayHex:4 }}</small></div></td>
+                                    <td><div style="margin:auto;" data-ng-class="displayB && 'marker marker-b'"><small>{{ cpu.gpr[1] | number:displayHex:4 }}</small></div></td>
+                                    <td><div style="margin:auto;" data-ng-class="displayC && 'marker marker-c'"><small>{{ cpu.gpr[2] | number:displayHex:4 }}</small></div></td>
+                                    <td><div style="margin:auto;" data-ng-class="displayD && 'marker marker-d'"><small>{{ cpu.gpr[3] | number:displayHex:4 }}</small></div></td>
                                     <td><div style="margin:auto;" class="marker marker-ip"><small>{{ cpu.ip | number:displayHex:4 }}</small></div></td>
                                     <td><div style="margin:auto;" class="marker marker-sp"><small>{{ cpu.sp | number:displayHex:4 }}</small></div></td>
                                     <td><small>{{ cpu.zero | flag }}</small></td>
@@ -103,13 +98,13 @@
                         <h4 class="panel-title">RAM</h4>
                     </div>
                     <div class="panel-body">
-                        <div class="source-code">
+                        <div class="source-code memory-dump">
                             <div class="memory-block"
-                                 ng-repeat="m in memory.data track by $index"
-                                 ng-class="getMemoryCellCss($index)">
-                                 <div ng-class="getMemoryInnerCellCss($index)" ng-switch="isInstruction($index)">
-                                     <small ng-switch-default>{{ m | number:displayHex:2 }}</small>
-                                     <a ng-switch-when="true" ng-click="jumpToLine($index)">
+                                 data-ng-repeat="m in memory.data track by $index"
+                                 data-ng-class="getMemoryCellCss($index)">
+                                 <div data-ng-class="getMemoryInnerCellCss($index)" data-ng-switch="isInstruction($index)">
+                                     <small data-ng-switch-default>{{ m | number:displayHex:2 }}</small>
+                                     <a data-ng-switch-when="true" data-ng-click="jumpToLine($index)">
                                          <small>{{ m | number:displayHex:2 }}</small>
                                      </a>
                                  </div>
@@ -118,26 +113,26 @@
                         <p style="margin-top:5px;">
                             <small>
                                 Instructions:
-                                <a ng-click="displayInstr = true" ng-hide="displayInstr">Show</a>
-                                <a ng-click="displayInstr = false" ng-show="displayInstr">Hide</a>
+                                <a data-ng-click="displayInstr = true" data-ng-hide="displayInstr">Show</a>
+                                <a data-ng-click="displayInstr = false" data-ng-show="displayInstr">Hide</a>
                                 <br>
                                 View:
-                                <a ng-click="displayHex = true" ng-hide="displayHex">Hex</a>
-                                <a ng-click="displayHex = false" ng-show="displayHex">Decimal</a>
-								<br>
-								Register addressing: 
+                                <a data-ng-click="displayHex = true" data-ng-hide="displayHex">Hex</a>
+                                <a data-ng-click="displayHex = false" data-ng-show="displayHex">Decimal</a>
+                                <br>
+                                Register addressing: 
                                 <span style="margin-left:5px;">A:</span>
-                                <a ng-click="displayA = true" ng-hide="displayA">Show</a>
-                                <a ng-click="displayA = false" ng-show="displayA">Hide</a>
+                                <a data-ng-click="displayA = true" data-ng-hide="displayA">Show</a>
+                                <a data-ng-click="displayA = false" data-ng-show="displayA">Hide</a>
                                 <span style="margin-left:5px;">B:</span>
-                                <a ng-click="displayB = true" ng-hide="displayB">Show</a>
-                                <a ng-click="displayB = false" ng-show="displayB">Hide</a>
+                                <a data-ng-click="displayB = true" data-ng-hide="displayB">Show</a>
+                                <a data-ng-click="displayB = false" data-ng-show="displayB">Hide</a>
                                 <span style="margin-left:5px;">C:</span>
-                                <a ng-click="displayC = true" ng-hide="displayC">Show</a>
-                                <a ng-click="displayC = false" ng-show="displayC">Hide</a>
+                                <a data-ng-click="displayC = true" data-ng-hide="displayC">Show</a>
+                                <a data-ng-click="displayC = false" data-ng-show="displayC">Hide</a>
                                 <span style="margin-left:5px;">D:</span>
-                                <a ng-click="displayD = true" ng-hide="displayD">Show</a>
-                                <a ng-click="displayD = false" ng-show="displayD">Hide</a>
+                                <a data-ng-click="displayD = true" data-ng-hide="displayD">Show</a>
+                                <a data-ng-click="displayD = false" data-ng-show="displayD">Hide</a>
                             </small>
                         </p>
                     </div>
@@ -153,11 +148,11 @@
                                 <th>Address</th>
                                 <th>Value</th>
                             </tr>
-                            <tr ng-repeat="(name, value) in labels" class="codelabel">
+                            <tr data-ng-repeat="(name, value) in labels" class="codelabel">
                                 <td class="codelabel-name">{{ name }}</td>
-                                <td class="codelabel-line"><a ng-click="jumpToLine(value)">{{ value | number:displayHex:4 }}</a></td>
+                                <td class="codelabel-line"><a data-ng-click="jumpToLine(value)">{{ value | number:displayHex:4 }}</a></td>
                                 <td class="codelabel-value">{{ memory.data[value] | number:displayHex:2 }}
-                                    <span ng-if="memory.data[value] >= 32 && memory.data[value] <= 126">
+                                    <span data-ng-if="memory.data[value] >= 32 && memory.data[value] <= 126">
                                         ('{{ getChar(memory.data[value]) }}')
                                     </span>
                                 </td>
