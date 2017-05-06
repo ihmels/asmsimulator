@@ -68,8 +68,7 @@
                         <h4 class="panel-title">CPU & Memory</h4>
                     </div>
                     <div class="panel-body">
-                        <p class="text-muted">Registers / Flags</p>
-                        <table class="table table-condensed table-striped">
+                        <table class="table table-condensed table-striped" style="margin-bottom: 0">
                             <thead>
                                 <tr>
                                     <th style="text-align:center">A</th>
@@ -97,7 +96,13 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <p class="text-muted">RAM</p>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">RAM</h4>
+                    </div>
+                    <div class="panel-body">
                         <div class="source-code">
                             <div class="memory-block"
                                  ng-repeat="m in memory.data track by $index"
