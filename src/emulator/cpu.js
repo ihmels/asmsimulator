@@ -97,14 +97,16 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                 };
 
                 var push = function(value) {
-                    memory.store(self.sp--, value);
+                    writeMemory(self.sp, value);
+                    self.sp -= 2;
                     if (self.sp < self.minSP) {
                         throw 'Stack overflow';
                     }
                 };
 
                 var pop = function() {
-                    var value = memory.load(++self.sp);
+                    var value = readMemory(self.sp);
+                    self.sp += 2;
                     if (self.sp > self.maxSP) {
                         throw 'Stack underflow';
                     }
@@ -591,7 +593,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
             self.minSP = 0;
 
             self.gpr = [0, 0, 0, 0];
-            self.sp = self.maxSP;
+            self.sp = self.maxSP - 1;
             self.ip = 0;
             self.zero = false;
             self.carry = false;
