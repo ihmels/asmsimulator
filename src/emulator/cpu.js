@@ -105,7 +105,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                 };
 
                 var pop = function() {
-                    var value = readMemory(self.sp);
+                    var value = readMemory(self.sp + 2);
                     self.sp += 2;
                     if (self.sp > self.maxSP) {
                         throw 'Stack underflow';
@@ -589,7 +589,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
         },
         reset: function() {
             var self = this;
-            self.maxSP = 231;
+            self.maxSP = 999;
             self.minSP = 0;
 
             self.gpr = [0, 0, 0, 0];
