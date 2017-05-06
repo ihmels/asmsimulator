@@ -39,13 +39,7 @@
                     </div>
                     <div class="panel-body">
                         <form role="form">
-                            <textarea id="sourceCode"
-                                      class="form-control source-code"
-                                      style="margin-bottom:5px;"
-                                      rows="35"
-                                      tab-support
-                                      select-line
-                                      data-ng-model="code"></textarea>
+                            <textarea id="sourceCode" class="form-control source-code" style="margin-bottom:5px;" rows="35" data-tab-support data-select-line data-ng-model="code"></textarea>
                             <button type="button" class="btn btn-default" data-ng-click="assemble()">Assemble</button>
                         </form>
                     </div>
@@ -104,7 +98,7 @@
                         <h4 class="panel-title">RAM</h4>
                     </div>
                     <div class="panel-body">
-                        <div class="source-code">
+                        <div class="source-code memory-dump">
                             <div class="memory-block"
                                  data-ng-repeat="m in memory.data track by $index"
                                  data-ng-class="getMemoryCellCss($index)">

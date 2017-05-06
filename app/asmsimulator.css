@@ -1,6 +1,9 @@
 .source-code {
+    font-family: monospace, monospace;
+}
+
+.memory-dump {
     width: 57.6em;
-    font-family: source-code-pro, Courier New;
 }
 
 .output, .output-bg {
