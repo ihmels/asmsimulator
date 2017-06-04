@@ -327,6 +327,30 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                         checkOperation(getGPR_SP(regTo) - number);
                         self.ip += 5;
                         break;
+                    case opcodes.CMP_BYTE_REG_WITH_REG:
+                        regTo = checkGPR_SP(readMemory(self.ip + 1, 2));
+                        regFrom = checkGPR_SP(readMemory(self.ip + 3, 2));
+                        checkOperation((getGPR_SP(regTo) & 0xff) - (getGPR_SP(regFrom) & 0xff));
+                        self.ip += 5;
+                        break;
+                    case opcodes.CMP_BYTE_REGADDRESS_WITH_REG:
+                        regTo = checkGPR_SP(readMemory(self.ip + 1, 2));
+                        regFrom = readMemory(self.ip + 3, 2);
+                        checkOperation((getGPR_SP(regTo) & 0xff) - readMemory(indirectRegisterAddress(regFrom), 1));
+                        self.ip += 5;
+                        break;
+                    case opcodes.CMP_BYTE_ADDRESS_WITH_REG:
+                        regTo = checkGPR_SP(readMemory(self.ip + 1, 2));
+                        memFrom = readMemory(self.ip + 3, 2);
+                        checkOperation((getGPR_SP(regTo) & 0xff )- readMemory(memFrom, 1));
+                        self.ip += 5;
+                        break;
+                    case opcodes.CMP_BYTE_NUMBER_WITH_REG:
+                        regTo = checkGPR_SP(readMemory(self.ip + 1, 2));
+                        number = readMemory(self.ip + 3, 2);
+                        checkOperation((getGPR_SP(regTo) & 0xff) - (number & 0xff));
+                        self.ip += 5;
+                        break;
                     case opcodes.JMP_REGADDRESS:
                         regTo = checkGPR(readMemory(self.ip + 1, 2));
                         jump(self.gpr[regTo]);
