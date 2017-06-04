@@ -348,16 +348,29 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     p1 = getValue(match[op1_group]);
                                     p2 = getValue(match[op2_group]);
 
-                                    if (p1.type === 'register' && p2.type === 'register')
-                                        opCode = opcodes.CMP_REG_WITH_REG;
-                                    else if (p1.type === 'register' && p2.type === 'regaddress')
-                                        opCode = opcodes.CMP_REGADDRESS_WITH_REG;
-                                    else if (p1.type === 'register' && p2.type === 'address')
-                                        opCode = opcodes.CMP_ADDRESS_WITH_REG;
-                                    else if (p1.type === 'register' && p2.type === 'number')
-                                        opCode = opcodes.CMP_NUMBER_WITH_REG;
-                                    else
-                                        throw 'CMP does not support this operands';
+                                    if (isByteOperation(match[byte_group])) {
+                                        if (p1.type === 'register' && p2.type === 'register')
+                                            opCode = opcodes.CMP_BYTE_REG_WITH_REG;
+                                        else if (p1.type === 'register' && p2.type === 'regaddress')
+                                            opCode = opcodes.CMP_BYTE_REGADDRESS_WITH_REG;
+                                        else if (p1.type === 'register' && p2.type === 'address')
+                                            opCode = opcodes.CMP_BYTE_ADDRESS_WITH_REG;
+                                        else if (p1.type === 'register' && p2.type === 'number')
+                                            opCode = opcodes.CMP_BYTE_NUMBER_WITH_REG;
+                                        else
+                                            throw 'CMP does not support this operands';
+                                    } else {
+                                        if (p1.type === 'register' && p2.type === 'register')
+                                            opCode = opcodes.CMP_REG_WITH_REG;
+                                        else if (p1.type === 'register' && p2.type === 'regaddress')
+                                            opCode = opcodes.CMP_REGADDRESS_WITH_REG;
+                                        else if (p1.type === 'register' && p2.type === 'address')
+                                            opCode = opcodes.CMP_ADDRESS_WITH_REG;
+                                        else if (p1.type === 'register' && p2.type === 'number')
+                                            opCode = opcodes.CMP_NUMBER_WITH_REG;
+                                        else
+                                            throw 'CMP does not support this operands';
+                                    }
 
                                     code.push(opCode);
                                     codePushOperands(p1.value, p2.value);
