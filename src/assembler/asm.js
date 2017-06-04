@@ -186,7 +186,6 @@ app.service('assembler', ['opcodes', function (opcodes) {
             
             var codePushOperands = function () {            
                 for (var i = 0; i < arguments.length; i++) {
-                    console.log(arguments[i]);
                     if (angular.isNumber(arguments[i])) {
                         code.push(arguments[i] >> 8, arguments[i] & 0xff);
                     } else {
@@ -650,9 +649,6 @@ app.service('assembler', ['opcodes', function (opcodes) {
                     throw {error: e, line: i};
                 }
             }
-            
-            console.log(labels);
-            console.log(code);
 
             // Replace label
             for (i = 0, l = code.length; i < l; i++) {
