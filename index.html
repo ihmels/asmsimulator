@@ -12,6 +12,7 @@
         <div class="container-fluid">
             <div class="navbar-header form-inline">
                 <div class="form-group">
+                    <button type="button" class="btn btn-default navbar-btn" data-ng-click="assemble()">Assemble</button>
                     <div class="btn-group">
                         <button type="button" class="btn btn-success navbar-btn" data-ng-click="run()" data-ng-hide="isRunning">▶️ Run</button>
                         <button type="button" class="btn btn-default navbar-btn" data-ng-click="stop()" data-ng-show="isRunning">⏸ Pause</button>
@@ -39,8 +40,7 @@
                     </div>
                     <div class="panel-body">
                         <form role="form">
-                            <textarea id="sourceCode" class="form-control source-code" style="margin-bottom:5px;" rows="35" data-tab-support data-select-line data-ng-model="code"></textarea>
-                            <button type="button" class="btn btn-default" data-ng-click="assemble()">Assemble</button>
+                            <textarea id="sourceCode" class="form-control source-code" rows="35" data-tab-support data-select-line data-ng-model="code"></textarea>
                         </form>
                     </div>
                 </div>
