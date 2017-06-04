@@ -4,7 +4,7 @@ app.service('assembler', ['opcodes', function (opcodes) {
             // Use https://www.debuggex.com/
             // Matches: "label: INSTRUCTION byte (["')OPERAND1(]"'), (["')OPERAND2(]"')
             // GROUPS:     1         2       3           4                   7
-            var regex = /^[\t ]*(?:([.A-Za-z]\w*)[:])?(?:[\t ]*([A-Za-z]{2,4})(?:[\t ]+(byte))?(?:[\t ]+(\[(\w+((\+|-)\d+)?)\]|\".+?\"|\'.+?\'|[.A-Za-z0-9]\w*)(?:[\t ]*[,][\t ]*(\[(\w+((\+|-)\d+)?)\]|\".+?\"|\'.+?\'|[.A-Za-z0-9]\w*))?)?)?[\t ]*(?:;.*)?$/;
+            var regex = /^[\t ]*(?:([.A-Za-z]\w*)[:])?(?:[\t ]*([A-Za-z]{2,4})(?:[\t ]+(byte|BYTE))?(?:[\t ]+(\[(\w+((\+|-)\d+)?)\]|\".+?\"|\'.+?\'|[.A-Za-z0-9]\w*)(?:[\t ]*[,][\t ]*(\[(\w+((\+|-)\d+)?)\]|\".+?\"|\'.+?\'|[.A-Za-z0-9]\w*))?)?)?[\t ]*(?:;.*)?$/;
 
             // Regex group indexes for operands
             var byte_group = 3;
@@ -142,10 +142,6 @@ app.service('assembler', ['opcodes', function (opcodes) {
             var parseLabel = function (input) {
                 return regexLabel.exec(input) ? input : undefined;
             };
-            
-            var isByteOperation = function (input) {
-                return input === 'byte';
-            };
 
             var getValue = function (input) {
                 switch (input.slice(0, 1)) {
@@ -188,8 +184,8 @@ app.service('assembler', ['opcodes', function (opcodes) {
                     throw instr + ': too many arguments';
                 }
             };
-            
-            var codePushOperands = function () {            
+
+            var codePushOperands = function () {
                 for (var i = 0; i < arguments.length; i++) {
                     if (angular.isNumber(arguments[i])) {
                         code.push(arguments[i] >> 8, arguments[i] & 0xff);
@@ -241,7 +237,7 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     p1 = getValue(match[op1_group]);
                                     p2 = getValue(match[op2_group]);
 
-                                    if (isByteOperation(match[byte_group])) {
+                                    if (match[byte_group] !== undefined) {
                                         if (p1.type === 'register' && p2.type === 'register')
                                             opCode = opcodes.MOV_BYTE_REG_TO_REG;
                                         else if (p1.type === 'register' && p2.type === 'address')
@@ -348,7 +344,7 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     p1 = getValue(match[op1_group]);
                                     p2 = getValue(match[op2_group]);
 
-                                    if (isByteOperation(match[byte_group])) {
+                                    if (match[byte_group] !== undefined) {
                                         if (p1.type === 'register' && p2.type === 'register')
                                             opCode = opcodes.CMP_BYTE_REG_WITH_REG;
                                         else if (p1.type === 'register' && p2.type === 'regaddress')
@@ -694,7 +690,7 @@ app.service('assembler', ['opcodes', function (opcodes) {
                 if (!angular.isNumber(code[i])) {
                     if (code[i] in labels) {
                         var label = code[i];
-                    
+
                         code[i] = labels[label] >> 8;
                         code[i+1] = labels[label] & 0xff;
                     } else {
