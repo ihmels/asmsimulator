@@ -99,6 +99,12 @@ MOV reg, address
 MOV reg, constant
 MOV address, reg
 MOV address, constant
+
+MOV BYTE reg, reg
+MOV BYTE reg, address
+MOV BYTE reg, constant
+MOV BYTE address, reg
+MOV BYTE address, constant
 </pre>
         <h2 id="db">DB – Variable</h2>
         <p>Defines a variable. A variable can either be a single number, character or a string.</p>
@@ -168,6 +174,10 @@ SHR reg, constant
 CMP reg, reg
 CMP reg, address
 CMP reg, constant
+
+CMP BYTE reg, reg
+CMP BYTE reg, address
+CMP BYTE reg, constant
 </pre>
         <h2 id="jumps">Jumps</h2>
         <h3 id="jmp">JMP – Unconditional jump</h3>
