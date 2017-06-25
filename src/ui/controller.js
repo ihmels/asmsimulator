@@ -26,7 +26,6 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
         '\tJMP start\n' +
         'hello:\tDB \"Hello World!\"\t; Variable\n' +
         '\tDB 0\t\t\t; String terminator\n' +
-        '\tDB 0\t\t\t; Temporary fix\n' +
         '\n' +
         'start:\n'+
         '\tMOV C, hello\t\t; Point to var\n' +
@@ -40,11 +39,11 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
         '\tMOV B, 0\n' +
         '\n' +
         '.loop:\n' +
-        '\tMOV A, [C]\t\t; Get char from var\n' +
-        '\tMOV [D], A\t\t; Write to output\n' +
+        '\tMOV BYTE A, [C]\t\t; Get char from var\n' +
+        '\tMOV BYTE [D], A\t\t; Write to output\n' +
         '\tINC C\n' +
         '\tINC D\n' +
-        '\tCMP B, [C]\t\t; Check if end\n' +
+        '\tCMP BYTE B, [C]\t\t; Check if end\n' +
         '\tJNZ .loop\t\t; jump if not\n' +
         '\n' +
         '\tPOP B\n' +
