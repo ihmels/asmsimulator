@@ -284,16 +284,29 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     p1 = getValue(match[op1_group]);
                                     p2 = getValue(match[op2_group]);
 
-                                    if (p1.type === 'register' && p2.type === 'register')
-                                        opCode = opcodes.ADD_REG_TO_REG;
-                                    else if (p1.type === 'register' && p2.type === 'regaddress')
-                                        opCode = opcodes.ADD_REGADDRESS_TO_REG;
-                                    else if (p1.type === 'register' && p2.type === 'address')
-                                        opCode = opcodes.ADD_ADDRESS_TO_REG;
-                                    else if (p1.type === 'register' && p2.type === 'number')
-                                        opCode = opcodes.ADD_NUMBER_TO_REG;
-                                    else
-                                        throw 'ADD does not support this operands';
+                                    if (match[byte_group] !== undefined) {
+                                        if (p1.type === 'register' && p2.type === 'register')
+                                            opCode = opcodes.ADD_BYTE_REG_TO_REG;
+                                        else if (p1.type === 'register' && p2.type === 'regaddress')
+                                            opCode = opcodes.ADD_BYTE_REGADDRESS_TO_REG;
+                                        else if (p1.type === 'register' && p2.type === 'address')
+                                            opCode = opcodes.ADD_BYTE_ADDRESS_TO_REG;
+                                        else if (p1.type === 'register' && p2.type === 'number')
+                                            opCode = opcodes.ADD_BYTE_NUMBER_TO_REG;
+                                        else
+                                            throw 'ADD does not support this operands';
+                                    } else {
+                                        if (p1.type === 'register' && p2.type === 'register')
+                                            opCode = opcodes.ADD_REG_TO_REG;
+                                        else if (p1.type === 'register' && p2.type === 'regaddress')
+                                            opCode = opcodes.ADD_REGADDRESS_TO_REG;
+                                        else if (p1.type === 'register' && p2.type === 'address')
+                                            opCode = opcodes.ADD_ADDRESS_TO_REG;
+                                        else if (p1.type === 'register' && p2.type === 'number')
+                                            opCode = opcodes.ADD_NUMBER_TO_REG;
+                                        else
+                                            throw 'ADD does not support this operands';
+                                    }
 
                                     code.push(opCode);
                                     codePushOperands(p1.value, p2.value);
@@ -302,16 +315,29 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     p1 = getValue(match[op1_group]);
                                     p2 = getValue(match[op2_group]);
 
-                                    if (p1.type === 'register' && p2.type === 'register')
-                                        opCode = opcodes.SUB_REG_FROM_REG;
-                                    else if (p1.type === 'register' && p2.type === 'regaddress')
-                                        opCode = opcodes.SUB_REGADDRESS_FROM_REG;
-                                    else if (p1.type === 'register' && p2.type === 'address')
-                                        opCode = opcodes.SUB_ADDRESS_FROM_REG;
-                                    else if (p1.type === 'register' && p2.type === 'number')
-                                        opCode = opcodes.SUB_NUMBER_FROM_REG;
-                                    else
-                                        throw 'SUB does not support this operands';
+                                    if (match[byte_group] !== undefined) {
+                                        if (p1.type === 'register' && p2.type === 'register')
+                                            opCode = opcodes.SUB_BYTE_REG_FROM_REG;
+                                        else if (p1.type === 'register' && p2.type === 'regaddress')
+                                            opCode = opcodes.SUB_BYTE_REGADDRESS_FROM_REG;
+                                        else if (p1.type === 'register' && p2.type === 'address')
+                                            opCode = opcodes.SUB_BYTE_ADDRESS_FROM_REG;
+                                        else if (p1.type === 'register' && p2.type === 'number')
+                                            opCode = opcodes.SUB_BYTE_NUMBER_FROM_REG;
+                                        else
+                                            throw 'SUB does not support this operands';
+                                    } else {
+                                        if (p1.type === 'register' && p2.type === 'register')
+                                            opCode = opcodes.SUB_REG_FROM_REG;
+                                        else if (p1.type === 'register' && p2.type === 'regaddress')
+                                            opCode = opcodes.SUB_REGADDRESS_FROM_REG;
+                                        else if (p1.type === 'register' && p2.type === 'address')
+                                            opCode = opcodes.SUB_ADDRESS_FROM_REG;
+                                        else if (p1.type === 'register' && p2.type === 'number')
+                                            opCode = opcodes.SUB_NUMBER_FROM_REG;
+                                        else
+                                            throw 'SUB does not support this operands';
+                                    }
 
                                     code.push(opCode);
                                     codePushOperands(p1.value, p2.value);

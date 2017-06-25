@@ -258,15 +258,15 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                         self.ip += 5;
                         break;
                     case opcodes.ADD_REG_TO_REG:
-                        regTo = checkGPR_SP(readMemory(self.ip + 1));
-                        regFrom = checkGPR_SP(readMemory(self.ip + 3));
+                        regTo = checkGPR_SP(readMemory(self.ip + 1, 2));
+                        regFrom = checkGPR_SP(readMemory(self.ip + 3, 2));
                         setGPR_SP(regTo,checkOperation(getGPR_SP(regTo,2) + getGPR_SP(regFrom,2)),2);
                         self.ip += 5;
                         break;
                     case opcodes.ADD_REGADDRESS_TO_REG:
                         regTo = checkGPR_SP(readMemory(self.ip + 1, 2));
                         regFrom = readMemory(self.ip + 3, 2);
-                        setGPR_SP(regTo,checkOperation(getGPR_SP(regTo,2) + memory.load(indirectRegisterAddress(regFrom))),2);
+                        setGPR_SP(regTo,checkOperation(getGPR_SP(regTo,2) + readMemory(indirectRegisterAddress(regFrom), 2)),2);
                         self.ip += 5;
                         break;
                     case opcodes.ADD_ADDRESS_TO_REG:
@@ -281,10 +281,34 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                         setGPR_SP(regTo,checkOperation(getGPR_SP(regTo,2) + number),2);
                         self.ip += 5;
                         break;
+                    case opcodes.ADD_BYTE_REG_TO_REG:
+                        regTo = checkGPR_SP(readMemory(self.ip + 1, 2));
+                        regFrom = checkGPR_SP(readMemory(self.ip + 3, 2));
+                        setGPR_SP(regTo,checkOperation(getGPR_SP(regTo,1) + getGPR_SP(regFrom,1)),1);
+                        self.ip += 5;
+                        break;
+                    case opcodes.ADD_BYTE_REGADDRESS_TO_REG:
+                        regTo = checkGPR_SP(readMemory(self.ip + 1, 2));
+                        regFrom = readMemory(self.ip + 3, 2);
+                        setGPR_SP(regTo,checkOperation(getGPR_SP(regTo,1) + readMemory(indirectRegisterAddress(regFrom),1)),1);
+                        self.ip += 5;
+                        break;
+                    case opcodes.ADD_BYTE_ADDRESS_TO_REG:
+                        regTo = checkGPR_SP(readMemory(self.ip + 1, 2));
+                        memFrom = readMemory(self.ip + 3, 2);
+                        setGPR_SP(regTo,checkOperation(getGPR_SP(regTo,1) + readMemory(memFrom, 1)),1);
+                        self.ip += 5;
+                        break;
+                    case opcodes.ADD_BYTE_NUMBER_TO_REG:
+                        regTo = checkGPR_SP(readMemory(self.ip + 1, 2));
+                        number = readMemory(self.ip + 4, 1);
+                        setGPR_SP(regTo,checkOperation(getGPR_SP(regTo,1) + number),1);
+                        self.ip += 5;
+                        break;
                     case opcodes.SUB_REG_FROM_REG:
                         regTo = checkGPR_SP(readMemory(self.ip + 1, 2));
-                        regFrom = checkGPR_SP(memory.load(self.ip + 3));
-                        setGPR_SP(regTo,checkOperation(getGPR_SP(regTo,2) - self.gpr[regFrom]),2);
+                        regFrom = checkGPR_SP(readMemory(self.ip + 3, 2));
+                        setGPR_SP(regTo,checkOperation(getGPR_SP(regTo,2) - getGPR_SP(regFrom, 2)),2);
                         self.ip += 5;
                         break;
                     case opcodes.SUB_REGADDRESS_FROM_REG:
@@ -303,6 +327,30 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                         regTo = checkGPR_SP(readMemory(self.ip + 1, 2));
                         number = readMemory(self.ip + 3, 2);
                         setGPR_SP(regTo,checkOperation(getGPR_SP(regTo,2) - number),2);
+                        self.ip += 5;
+                        break;
+                    case opcodes.SUB_BYTE_REG_FROM_REG:
+                        regTo = checkGPR_SP(readMemory(self.ip + 1, 2));
+                        regFrom = checkGPR_SP(readMemory(self.ip + 3, 2));
+                        setGPR_SP(regTo,checkOperation(getGPR_SP(regTo,1) - getGPR_SP(regFrom, 1)),1);
+                        self.ip += 5;
+                        break;
+                    case opcodes.SUB_BYTE_REGADDRESS_FROM_REG:
+                        regTo = checkGPR_SP(readMemory(self.ip + 1, 2));
+                        regFrom = readMemory(self.ip + 3, 2);
+                        setGPR_SP(regTo,checkOperation(getGPR_SP(regTo,1) - readMemory(indirectRegisterAddress(regFrom), 1)),1);
+                        self.ip += 5;
+                        break;
+                    case opcodes.SUB_BYTE_ADDRESS_FROM_REG:
+                        regTo = checkGPR_SP(readMemory(self.ip + 1, 2));
+                        memFrom = readMemory(self.ip + 3, 2);
+                        setGPR_SP(regTo,checkOperation(getGPR_SP(regTo,1) - readMemory(memFrom, 1)),1);
+                        self.ip += 5;
+                        break;
+                    case opcodes.SUB_BYTE_NUMBER_FROM_REG:
+                        regTo = checkGPR_SP(readMemory(self.ip + 1, 2));
+                        number = readMemory(self.ip + 4, 1);
+                        setGPR_SP(regTo,checkOperation(getGPR_SP(regTo,1) - number),1);
                         self.ip += 5;
                         break;
                     case opcodes.INC_REG:
