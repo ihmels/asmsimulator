@@ -176,7 +176,7 @@ app.service('assembler', ['opcodes', function (opcodes) {
                 if (upperLabel === 'A' || upperLabel === 'B' || upperLabel === 'C' || upperLabel === 'D')
                     throw 'Label contains keyword: ' + upperLabel;
 
-                labels[label] = code.length;
+                labels[label] = code.length + 512; //TODO -> Konstante
             };
 
             var checkNoExtraArg = function (instr, arg) {
@@ -210,7 +210,7 @@ app.service('assembler', ['opcodes', function (opcodes) {
                             // Add mapping instr pos to line number
                             // Don't do it for DB as this is not a real instruction
                             if (instr !== 'DB') {
-                                mapping[code.length] = i;
+                                mapping[(code.length + 512)] = i; //TODO -> Konstante
                             }
 
                             switch (instr) {

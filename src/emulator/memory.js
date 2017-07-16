@@ -2,6 +2,7 @@ app.service('memory', [function () {
     var memory = {
         data: Array(1024),
         lastAccess: -1,
+	startUserSpace: 512,
         load: function (address) {
             var self = this;
 
