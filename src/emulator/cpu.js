@@ -741,7 +741,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
 
             self.gpr = [0, 0, 0, 0];
             self.sp = self.maxSP - 1;
-            self.ip = 0;
+            self.ip = memory.startUserSpace;
             self.zero = false;
             self.carry = false;
             self.fault = false;

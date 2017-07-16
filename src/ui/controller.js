@@ -128,11 +128,11 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
             var binary = assembly.code;
             $scope.labels = assembly.labels;
 
-            if (binary.length > memory.data.length)
+            if ((binary.length + memory.startUserSpace) > memory.data.length)
                 throw 'Binary code does not fit into the memory. Max ' + memory.data.length + ' bytes are allowed';
 
             for (var i = 0, l = binary.length; i < l; i++) {
-                memory.data[i] = binary[i];
+                memory.data[(i + memory.startUserSpace)] = binary[i];
             }
         } catch (e) {
             if (e.line !== undefined) {
