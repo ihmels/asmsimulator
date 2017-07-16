@@ -49,6 +49,17 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
         '\tPOP B\n' +
         '\tPOP A\n' +
         '\tRET';
+    var firmware = [0x08,0x00,0x00,0x00,0x00,0x00,0x00,0x00, 0x32, 0x00, 0x00, 0x32, 0x00, 0x01, 0x06, 0x00, 0x00, 0x04,  0x00, 0x06, 0x00, 0x01, 0x03, 0xE0, 0x6C, 0x00, 0x01, 0x00, 0x00, 0x12, 0x00, 0x01, 0x14, 0x00, 0x00, 0x00, 0x01, 0x27, 0x00, 0x18, 0x36, 0x00, 0x01, 0x36, 0x00, 0x00, 0x39 ];
+
+    for(var i = 0; i < firmware.length; i++){
+	memory.data[i] = firmware[i];
+    }
+
+    for(i = firmware.length; i < 512; i++){
+	memory.data[i] = 0;
+    }
+
+    
 
     $scope.reset = function () {
         cpu.reset();
@@ -100,7 +111,7 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
     };
 
     $scope.checkPrgrmLoaded = function () {
-        for (var i = 0, l = memory.data.length; i < l; i++) {
+        for (var i = memory.startUserSpace, l = memory.data.length; i < l; i++) {
             if (memory.data[i] !== 0) {
                 return true;
             }
