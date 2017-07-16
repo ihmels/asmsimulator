@@ -695,6 +695,19 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     code.push(opCode);
                                     codePushOperands(p1.value, p2.value);
                                     break;
+				case 'INT':
+			            p1 = getValue(match[op1_group]);
+				    checkNoExtraArg('INT', match[op2_group]);
+
+                                    if (p1.type === 'number')
+                                        opCode = opcodes.EXCEC_INT_ROUTINE;
+                                    else
+                                        throw 'INT does not support this operand';
+
+                                    code.push(opCode);
+                                    codePushOperands(p1.value);
+                                    break;
+
                                 default:
                                     throw 'Invalid instruction: ' + match[2];
                             }

@@ -718,6 +718,12 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                         self.gpr[regTo] = checkOperation(self.gpr[regTo] >>> number);
                         self.ip += 5;
                         break;
+		    case opcodes.EXCEC_INT_ROUTINE:
+                        number = readMemory(self.ip + 1, 1);
+			number = readMemory(number, 1);
+                        push(self.ip + 2);
+			jump(number);
+		        break;
                     default:
                         throw 'Invalid op code: ' + instr;
                 }
