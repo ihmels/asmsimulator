@@ -720,7 +720,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                         break;
 		    case opcodes.EXCEC_INT_ROUTINE:
                         number = readMemory(self.ip + 1, 2);
-			number = readMemory(number, 1);
+			number = readMemory(number * 2, 2);
                         push(self.ip + 3);
 			jump(number);
 		        break;
