@@ -548,6 +548,7 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     codePushOperands(p1.value);
                                     break;
                                 case 'RET':
+				case 'IRET':
                                     checkNoExtraArg(instr, match[op1_group]);
 
                                     opCode = opcodes.RET;
