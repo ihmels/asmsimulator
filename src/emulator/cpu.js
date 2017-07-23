@@ -135,6 +135,9 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                 };
                 
                 var readMemory = function(address, size) {
+		    if((address < 512 && (address < 6 || address > 15)) && !self.superVisor){
+			throw 'Memory-Access denied: No Supervisor';
+		    }	
                     var data = memory.load(address);
                     
                     if (size > 1)
@@ -144,6 +147,10 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                 };
                 
                 var writeMemory = function(address, size, data) {
+		    if((address < 512 && (address < 6 || address > 15)) && !self.superVisor){
+			throw 'Memory-Access denied: No Supervisor';
+		    }
+
                     if (size > 1) {
                         memory.store(address, data >> 8);
                         memory.store(address + 1, data & 0xff);
@@ -719,11 +726,15 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                         self.ip += 5;
                         break;
 		    case opcodes.EXCEC_INT_ROUTINE:
+			self.superVisor = true;
                         number = readMemory(self.ip + 1, 2);
 			number = readMemory(number * 2, 2);
                         push(self.ip + 3);
 			jump(number);
 		        break;
+		    case opcodes.IRET:
+			self.superVisor = false;
+			break;
                     default:
                         throw 'Invalid op code: ' + instr;
                 }
@@ -745,6 +756,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
             self.zero = false;
             self.carry = false;
             self.fault = false;
+	    self.superVisor = false;
         }
     };
 
