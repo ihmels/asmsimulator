@@ -548,7 +548,6 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     codePushOperands(p1.value);
                                     break;
                                 case 'RET':
-				case 'IRET':
                                     checkNoExtraArg(instr, match[op1_group]);
 
                                     opCode = opcodes.RET;
@@ -708,7 +707,14 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     code.push(opCode);
                                     codePushOperands(p1.value);
                                     break;
+				case 'IRET':
+				    checkNoExtraArg(instr, match[op1_group]);
 
+                                    opCode = opcodes.IRET;
+
+                                    code.push(opCode);
+                                    break;
+					
                                 default:
                                     throw 'Invalid instruction: ' + match[2];
                             }
