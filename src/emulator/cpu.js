@@ -163,7 +163,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                     throw 'Instruction pointer is outside of memory';
                 }
                 
-                var regTo, regFrom, memFrom, memTo, number;
+                var regTo, regFrom, memFrom, memTo, number, isSuperVisor;
                 var instr = memory.load(self.ip);
                 switch(instr) {
                     case opcodes.NONE:
@@ -728,12 +728,19 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
 		    case opcodes.EXCEC_INT_ROUTINE:
 			self.superVisor = true;
                         number = readMemory(self.ip + 1, 2);
+			if(number <= 2){
+				isSuperVisor = true;
+			}else{
+				isSuperVisor = false;
+			}
 			number = readMemory(number * 2, 2);
+			self.superVisor = isSuperVisor;
                         push(self.ip + 3);
 			jump(number);
 		        break;
 		    case opcodes.IRET:
 			self.superVisor = false;
+                        jump(pop());			
 			break;
                     default:
                         throw 'Invalid op code: ' + instr;
