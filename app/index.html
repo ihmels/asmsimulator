@@ -53,7 +53,7 @@
                     </div>
                     <div class="panel-body source-code">
                         <div style="float:left;" class="output"
-                             data-ng-repeat="m in memory.data | startFrom: outputStartIndex track by $index">
+                             data-ng-repeat="m in memory.data | range:outputStartIndex:outputEndIndex track by $index">
                             <span>{{ getChar(m) }}</span>
                         </div>
                     </div>
