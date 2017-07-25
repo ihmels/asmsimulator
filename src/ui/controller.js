@@ -18,7 +18,8 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
                      {speed: 8, desc: '8 Hz'},
                      {speed: 16, desc: '16 Hz'}];
     $scope.speed = 4;
-    $scope.outputStartIndex = 0x3E0;
+    $scope.outputStartIndex = 0x1E0;
+    $scope.outputEndIndex = 0x1E0 + 32;
 
     $scope.code = '; Simple example\n' +
         '; Writes Hello World to the output\n' +
@@ -168,7 +169,7 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
     };
 
     $scope.getMemoryCellCss = function (index) {
-        if (index >= $scope.outputStartIndex) {
+        if (index >= $scope.outputStartIndex && index <= $scope.outputEndIndex) {
             return 'output-bg';
         } else if ($scope.isInstruction(index)) {
             return 'instr-bg';
