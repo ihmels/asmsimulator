@@ -104,7 +104,7 @@
                             <div class="memory-block"
                                  data-ng-repeat="m in memory.data track by $index"
                                  data-ng-class="getMemoryCellCss($index)">
-                                 <div data-ng-class="getMemoryInnerCellCss($index)" data-ng-switch="isInstruction($index)">
+                                 <div data-ng-class="getMemoryInnerCellCss($index)" data-ng-switch="isInstruction($index)" title="Address: {{ $index | number:displayHex:4 }}">
                                      <small data-ng-switch-default>{{ m | number:displayHex:2 }}</small>
                                      <a data-ng-switch-when="true" data-ng-click="jumpToLine($index)">
                                          <small>{{ m | number:displayHex:2 }}</small>
