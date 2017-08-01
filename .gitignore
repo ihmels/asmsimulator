@@ -1,4 +1,5 @@
 .idea
 bower_components/
 node_modules/
+app/asmsimulator.js
 asmimulator.iml
