@@ -725,7 +725,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                         self.gpr[regTo] = checkOperation(self.gpr[regTo] >>> number);
                         self.ip += 5;
                         break;
-                    case opcodes.EXCEC_INT_ROUTINE:
+                    case opcodes.INT:
                         self.superVisor = true;
                         number = readMemory(self.ip + 1, 2);
                         if (number <= 2) {

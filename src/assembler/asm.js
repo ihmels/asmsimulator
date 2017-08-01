@@ -689,7 +689,7 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     checkNoExtraArg('INT', match[op2_group]);
 
                                     if (p1.type === 'number')
-                                        opCode = opcodes.EXCEC_INT_ROUTINE;
+                                        opCode = opcodes.INT;
                                     else
                                         throw 'INT does not support this operand';
 

@@ -99,7 +99,7 @@ app.service('opcodes', [function() {
         CMP_BYTE_REGADDRESS_WITH_REG: 121,
         CMP_BYTE_ADDRESS_WITH_REG: 122,
         CMP_BYTE_NUMBER_WITH_REG: 123,
-	EXCEC_INT_ROUTINE: 124
+	INT: 124
     };
 
     return opcodes;
