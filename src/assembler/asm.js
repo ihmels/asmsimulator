@@ -345,6 +345,11 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     else
                                         throw 'INC does not support this operand';
 
+                                    if (match[byte_group] !== undefined) {
+                                        if (opCode === opcodes.INC_REG)
+                                            opCode = opcodes.INC_BYTE_REG;
+                                    }
+
                                     code.push(opCode);
                                     codePushOperands(p1.value);
                                     break;
@@ -356,6 +361,11 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                         opCode = opcodes.DEC_REG;
                                     else
                                         throw 'DEC does not support this operand';
+
+                                    if (match[byte_group] !== undefined) {
+                                        if (opCode === opcodes.DEC_REG)
+                                            opCode = opcodes.DEC_BYTE_REG;
+                                    }
 
                                     code.push(opCode);
                                     codePushOperands(p1.value);
@@ -557,7 +567,18 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     else if (p1.type === 'number')
                                         opCode = opcodes.MUL_NUMBER;
                                     else
-                                        throw 'MULL does not support this operand';
+                                        throw 'MUL does not support this operand';
+                                        
+                                    if (match[byte_group] !== undefined) {
+                                        if (opCode === opcodes.MUL_REG)
+                                            opCode = opcodes.MUL_BYTE_REG;
+                                        if (opCode === opcodes.MUL_REGADDRESS)
+                                            opCode = opcodes.MUL_BYTE_REGADDRESS;
+                                        if (opCode === opcodes.MUL_ADDRESS)
+                                            opCode = opcodes.MUL_BYTE_ADDRESS;
+                                        if (opCode === opcodes.MUL_NUMBER)
+                                            opCode = opcodes.MUL_BYTE_NUMBER;
+                                    }
 
                                     code.push(opCode);
                                     codePushOperands(p1.value);
@@ -576,6 +597,17 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                         opCode = opcodes.DIV_NUMBER;
                                     else
                                         throw 'DIV does not support this operand';
+                                        
+                                    if (match[byte_group] !== undefined) {
+                                        if (opCode === opcodes.DIV_REG)
+                                            opCode = opcodes.DIV_BYTE_REG;
+                                        if (opCode === opcodes.DIV_REGADDRESS)
+                                            opCode = opcodes.DIV_BYTE_REGADDRESS;
+                                        if (opCode === opcodes.DIV_ADDRESS)
+                                            opCode = opcodes.DIV_BYTE_ADDRESS;
+                                        if (opCode === opcodes.DIV_NUMBER)
+                                            opCode = opcodes.DIV_BYTE_NUMBER;
+                                    }
 
                                     code.push(opCode);
                                     codePushOperands(p1.value);
@@ -595,6 +627,17 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     else
                                         throw 'AND does not support this operands';
 
+                                    if (match[byte_group] !== undefined) {
+                                        if (opCode === opcodes.AND_REG_WITH_REG)
+                                            opCode = opcodes.AND_BYTE_REG_WITH_REG;
+                                        if (opCode === opcodes.AND_REGADDRESS_WITH_REG)
+                                            opCode = opcodes.AND_BYTE_REGADDRESS_WITH_REG;
+                                        if (opCode === opcodes.AND_ADDRESS_WITH_REG)
+                                            opCode = opcodes.AND_BYTE_ADDRESS_WITH_REG;
+                                        if (opCode === opcodes.AND_NUMBER_WITH_REG)
+                                            opCode = opcodes.AND_BYTE_NUMBER_WITH_REG;
+                                    }
+
                                     code.push(opCode);
                                     codePushOperands(p1.value, p2.value);
                                     break;
@@ -612,6 +655,17 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                         opCode = opcodes.OR_NUMBER_WITH_REG;
                                     else
                                         throw 'OR does not support this operands';
+
+                                    if (match[byte_group] !== undefined) {
+                                        if (opCode === opcodes.OR_REG_WITH_REG)
+                                            opCode = opcodes.OR_BYTE_REG_WITH_REG;
+                                        if (opCode === opcodes.OR_REGADDRESS_WITH_REG)
+                                            opCode = opcodes.OR_BYTE_REGADDRESS_WITH_REG;
+                                        if (opCode === opcodes.OR_ADDRESS_WITH_REG)
+                                            opCode = opcodes.OR_BYTE_ADDRESS_WITH_REG;
+                                        if (opCode === opcodes.OR_NUMBER_WITH_REG)
+                                            opCode = opcodes.OR_BYTE_NUMBER_WITH_REG;
+                                    }
 
                                     code.push(opCode);
                                     codePushOperands(p1.value, p2.value);
@@ -631,6 +685,17 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     else
                                         throw 'XOR does not support this operands';
 
+                                    if (match[byte_group] !== undefined) {
+                                        if (opCode === opcodes.XOR_REG_WITH_REG)
+                                            opCode = opcodes.XOR_BYTE_REG_WITH_REG;
+                                        if (opCode === opcodes.XOR_REGADDRESS_WITH_REG)
+                                            opCode = opcodes.XOR_BYTE_REGADDRESS_WITH_REG;
+                                        if (opCode === opcodes.XOR_ADDRESS_WITH_REG)
+                                            opCode = opcodes.XOR_BYTE_ADDRESS_WITH_REG;
+                                        if (opCode === opcodes.XOR_NUMBER_WITH_REG)
+                                            opCode = opcodes.XOR_BYTE_NUMBER_WITH_REG;
+                                    }
+
                                     code.push(opCode);
                                     codePushOperands(p1.value, p2.value);
                                     break;
@@ -642,6 +707,11 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                         opCode = opcodes.NOT_REG;
                                     else
                                         throw 'NOT does not support this operand';
+
+                                    if (match[byte_group] !== undefined) {
+                                        if (opCode === opcodes.NOT_REG)
+                                            opCode = opcodes.NOT_BYTE_REG;
+                                    }
 
                                     code.push(opCode);
                                     codePushOperands(p1.value);
