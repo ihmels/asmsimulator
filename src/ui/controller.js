@@ -169,7 +169,7 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
     };
 
     $scope.getMemoryCellCss = function (index) {
-        if (index >= $scope.outputStartIndex && index <= $scope.outputEndIndex) {
+        if (index >= $scope.outputStartIndex && index < $scope.outputEndIndex) {
             return 'output-bg';
         } else if ($scope.isInstruction(index)) {
             return 'instr-bg';
