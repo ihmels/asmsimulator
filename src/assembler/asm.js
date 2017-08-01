@@ -731,6 +731,17 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                         opCode = opcodes.SHL_NUMBER_WITH_REG;
                                     else
                                         throw instr + ' does not support this operands';
+                                        
+                                    if (match[byte_group] !== undefined) {
+                                        if (opCode === opcodes.SHL_REG_WITH_REG)
+                                            opCode = opcodes.SHL_BYTE_REG_WITH_REG;
+                                        if (opCode === opcodes.SHL_REGADDRESS_WITH_REG)
+                                            opCode = opcodes.SHL_BYTE_REGADDRESS_WITH_REG;
+                                        if (opCode === opcodes.SHL_ADDRESS_WITH_REG)
+                                            opCode = opcodes.SHL_BYTE_ADDRESS_WITH_REG;
+                                        if (opCode === opcodes.SHL_NUMBER_WITH_REG)
+                                            opCode = opcodes.SHL_BYTE_NUMBER_WITH_REG;
+                                    }
 
                                     code.push(opCode);
                                     codePushOperands(p1.value, p2.value);
@@ -750,6 +761,17 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                         opCode = opcodes.SHR_NUMBER_WITH_REG;
                                     else
                                         throw instr + ' does not support this operands';
+                                        
+                                    if (match[byte_group] !== undefined) {
+                                        if (opCode === opcodes.SHR_REG_WITH_REG)
+                                            opCode = opcodes.SHR_BYTE_REG_WITH_REG;
+                                        if (opCode === opcodes.SHR_REGADDRESS_WITH_REG)
+                                            opCode = opcodes.SHR_BYTE_REGADDRESS_WITH_REG;
+                                        if (opCode === opcodes.SHR_ADDRESS_WITH_REG)
+                                            opCode = opcodes.SHR_BYTE_ADDRESS_WITH_REG;
+                                        if (opCode === opcodes.SHR_NUMBER_WITH_REG)
+                                            opCode = opcodes.SHR_BYTE_NUMBER_WITH_REG;
+                                    }
 
                                     code.push(opCode);
                                     codePushOperands(p1.value, p2.value);

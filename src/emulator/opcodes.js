@@ -122,7 +122,15 @@ app.service('opcodes', [function() {
         XOR_BYTE_ADDRESS_WITH_REG: 180,
         XOR_BYTE_NUMBER_WITH_REG: 181,
         NOT_BYTE_REG: 182,
-	INT: 124
+        SHL_BYTE_REG_WITH_REG: 190,
+        SHL_BYTE_REGADDRESS_WITH_REG: 191,
+        SHL_BYTE_ADDRESS_WITH_REG: 192,
+        SHL_BYTE_NUMBER_WITH_REG: 193,
+        SHR_BYTE_REG_WITH_REG: 194,
+        SHR_BYTE_REGADDRESS_WITH_REG: 195,
+        SHR_BYTE_ADDRESS_WITH_REG: 196,
+        SHR_BYTE_NUMBER_WITH_REG: 197,
+	    INT: 198
     };
 
     return opcodes;
