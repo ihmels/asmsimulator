@@ -67,19 +67,19 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
 
                 var indirectRegisterAddress = function(value) {
                     var reg = value % 8;
-                    
+
                     var base;
                     if (reg < self.gpr.length) {
                         base = self.gpr[reg];
                     } else {
                         base = self.sp;
                     }
-                    
+
                     var offset = Math.floor(value / 8);
                     if ( offset > 4095 ) {
                         offset = offset - 8191;
                     }
-                    
+
                     return base+offset;
                 };
 
@@ -133,23 +133,23 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
 
                     return Math.floor(self.gpr[0] / divisor);
                 };
-                
+
                 var readMemory = function(address, size) {
-		    if((address < 512 && (address < 6 || address > 15)) && !self.superVisor){
-			throw 'Memory-Access denied: No Supervisor';
-		    }	
+                    if ((address < 512 && (address < 6 || address > 15)) && !self.superVisor) {
+                        throw 'Memory-Access denied: No Supervisor';
+                    }
                     var data = memory.load(address);
-                    
+
                     if (size > 1)
                         data = (data << 8) | memory.load(address + 1);
-                    
+
                     return data;
                 };
-                
+
                 var writeMemory = function(address, size, data) {
-		    if((address < 512 && (address < 6 || address > 15)) && !self.superVisor){
-			throw 'Memory-Access denied: No Supervisor';
-		    }
+                    if ((address < 512 && (address < 6 || address > 15)) && !self.superVisor) {
+                        throw 'Memory-Access denied: No Supervisor';
+                    }
 
                     if (size > 1) {
                         memory.store(address, data >> 8);
@@ -162,7 +162,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                 if (self.ip < 0 || self.ip >= memory.data.length) {
                     throw 'Instruction pointer is outside of memory';
                 }
-                
+
                 var regTo, regFrom, memFrom, memTo, number, isSuperVisor;
                 var instr = memory.load(self.ip);
                 switch(instr) {
@@ -725,27 +725,26 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                         self.gpr[regTo] = checkOperation(self.gpr[regTo] >>> number);
                         self.ip += 5;
                         break;
-		    case opcodes.EXCEC_INT_ROUTINE:
-			self.superVisor = true;
+                    case opcodes.EXCEC_INT_ROUTINE:
+                        self.superVisor = true;
                         number = readMemory(self.ip + 1, 2);
-			if(number <= 2){
-				isSuperVisor = true;
-			}else{
-				isSuperVisor = false;
-			}
-			number = readMemory(number * 2, 2);
-			self.superVisor = isSuperVisor;
+                        if (number <= 2) {
+                            isSuperVisor = true;
+                        } else {
+                            isSuperVisor = false;
+                        }
+                        number = readMemory(number * 2, 2);
+                        self.superVisor = isSuperVisor;
                         push(self.ip + 3);
-			jump(number);
-		        break;
-		    case opcodes.IRET:
-			self.superVisor = false;
-                        jump(pop());			
-			break;
+                        jump(number);
+                        break;
+                    case opcodes.IRET:
+                        self.superVisor = false;
+                        jump(pop());
+                        break;
                     default:
                         throw 'Invalid op code: ' + instr;
                 }
-
                 return true;
             } catch(e) {
                 self.fault = true;

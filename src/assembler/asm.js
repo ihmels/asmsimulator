@@ -176,7 +176,7 @@ app.service('assembler', ['opcodes', function (opcodes) {
                 if (upperLabel === 'A' || upperLabel === 'B' || upperLabel === 'C' || upperLabel === 'D')
                     throw 'Label contains keyword: ' + upperLabel;
 
-                labels[label] = code.length + 512; //TODO -> Konstante
+                labels[label] = code.length + 512;
             };
 
             var checkNoExtraArg = function (instr, arg) {
@@ -210,7 +210,7 @@ app.service('assembler', ['opcodes', function (opcodes) {
                             // Add mapping instr pos to line number
                             // Don't do it for DB as this is not a real instruction
                             if (instr !== 'DB') {
-                                mapping[(code.length + 512)] = i; //TODO -> Konstante
+                                mapping[(code.length + 512)] = i;
                             }
 
                             switch (instr) {
@@ -237,44 +237,42 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     p1 = getValue(match[op1_group]);
                                     p2 = getValue(match[op2_group]);
 
+                                    if (p1.type === 'register' && p2.type === 'register')
+                                        opCode = opcodes.MOV_REG_TO_REG;
+                                    else if (p1.type === 'register' && p2.type === 'address')
+                                        opCode = opcodes.MOV_ADDRESS_TO_REG;
+                                    else if (p1.type === 'register' && p2.type === 'regaddress')
+                                        opCode = opcodes.MOV_REGADDRESS_TO_REG;
+                                    else if (p1.type === 'address' && p2.type === 'register')
+                                        opCode = opcodes.MOV_REG_TO_ADDRESS;
+                                    else if (p1.type === 'regaddress' && p2.type === 'register')
+                                        opCode = opcodes.MOV_REG_TO_REGADDRESS;
+                                    else if (p1.type === 'register' && p2.type === 'number')
+                                        opCode = opcodes.MOV_NUMBER_TO_REG;
+                                    else if (p1.type === 'address' && p2.type === 'number')
+                                        opCode = opcodes.MOV_NUMBER_TO_ADDRESS;
+                                    else if (p1.type === 'regaddress' && p2.type === 'number')
+                                        opCode = opcodes.MOV_NUMBER_TO_REGADDRESS;
+                                    else
+                                        throw 'MOV does not support this operands';
+
                                     if (match[byte_group] !== undefined) {
-                                        if (p1.type === 'register' && p2.type === 'register')
+                                        if (opCode === opcodes.MOV_REG_TO_REG)
                                             opCode = opcodes.MOV_BYTE_REG_TO_REG;
-                                        else if (p1.type === 'register' && p2.type === 'address')
+                                        if (opCode === opcodes.MOV_ADDRESS_TO_REG)
                                             opCode = opcodes.MOV_BYTE_ADDRESS_TO_REG;
-                                        else if (p1.type === 'register' && p2.type === 'regaddress')
+                                        if (opCode === opcodes.MOV_REGADDRESS_TO_REG)
                                             opCode = opcodes.MOV_BYTE_REGADDRESS_TO_REG;
-                                        else if (p1.type === 'address' && p2.type === 'register')
+                                        if (opCode === opcodes.MOV_REG_TO_ADDRESS)
                                             opCode = opcodes.MOV_BYTE_REG_TO_ADDRESS;
-                                        else if (p1.type === 'regaddress' && p2.type === 'register')
+                                        if (opCode === opcodes.MOV_REG_TO_REGADDRESS)
                                             opCode = opcodes.MOV_BYTE_REG_TO_REGADDRESS;
-                                        else if (p1.type === 'register' && p2.type === 'number')
+                                        if (opCode === opcodes.MOV_NUMBER_TO_REG)
                                             opCode = opcodes.MOV_BYTE_NUMBER_TO_REG;
-                                        else if (p1.type === 'address' && p2.type === 'number')
+                                        if (opCode === opcodes.MOV_NUMBER_TO_ADDRESS)
                                             opCode = opcodes.MOV_BYTE_NUMBER_TO_ADDRESS;
-                                        else if (p1.type === 'regaddress' && p2.type === 'number')
+                                        if (opCode === opcodes.MOV_NUMBER_TO_REGADDRESS)
                                             opCode = opcodes.MOV_BYTE_NUMBER_TO_REGADDRESS;
-                                        else
-                                            throw 'MOV does not support this operands';
-                                    } else {
-                                        if (p1.type === 'register' && p2.type === 'register')
-                                            opCode = opcodes.MOV_REG_TO_REG;
-                                        else if (p1.type === 'register' && p2.type === 'address')
-                                            opCode = opcodes.MOV_ADDRESS_TO_REG;
-                                        else if (p1.type === 'register' && p2.type === 'regaddress')
-                                            opCode = opcodes.MOV_REGADDRESS_TO_REG;
-                                        else if (p1.type === 'address' && p2.type === 'register')
-                                            opCode = opcodes.MOV_REG_TO_ADDRESS;
-                                        else if (p1.type === 'regaddress' && p2.type === 'register')
-                                            opCode = opcodes.MOV_REG_TO_REGADDRESS;
-                                        else if (p1.type === 'register' && p2.type === 'number')
-                                            opCode = opcodes.MOV_NUMBER_TO_REG;
-                                        else if (p1.type === 'address' && p2.type === 'number')
-                                            opCode = opcodes.MOV_NUMBER_TO_ADDRESS;
-                                        else if (p1.type === 'regaddress' && p2.type === 'number')
-                                            opCode = opcodes.MOV_NUMBER_TO_REGADDRESS;
-                                        else
-                                            throw 'MOV does not support this operands';
                                     }
 
                                     code.push(opCode);
@@ -284,28 +282,26 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     p1 = getValue(match[op1_group]);
                                     p2 = getValue(match[op2_group]);
 
+                                    if (p1.type === 'register' && p2.type === 'register')
+                                        opCode = opcodes.ADD_REG_TO_REG;
+                                    else if (p1.type === 'register' && p2.type === 'regaddress')
+                                        opCode = opcodes.ADD_REGADDRESS_TO_REG;
+                                    else if (p1.type === 'register' && p2.type === 'address')
+                                        opCode = opcodes.ADD_ADDRESS_TO_REG;
+                                    else if (p1.type === 'register' && p2.type === 'number')
+                                        opCode = opcodes.ADD_NUMBER_TO_REG;
+                                    else
+                                        throw 'ADD does not support this operands';
+
                                     if (match[byte_group] !== undefined) {
-                                        if (p1.type === 'register' && p2.type === 'register')
+                                        if (opCode === opcodes.ADD_REG_TO_REG)
                                             opCode = opcodes.ADD_BYTE_REG_TO_REG;
-                                        else if (p1.type === 'register' && p2.type === 'regaddress')
+                                        if (opCode === opcodes.ADD_REGADDRESS_TO_REG)
                                             opCode = opcodes.ADD_BYTE_REGADDRESS_TO_REG;
-                                        else if (p1.type === 'register' && p2.type === 'address')
+                                        if (opCode === opcodes.ADD_ADDRESS_TO_REG)
                                             opCode = opcodes.ADD_BYTE_ADDRESS_TO_REG;
-                                        else if (p1.type === 'register' && p2.type === 'number')
+                                        if (opCode === opcodes.ADD_NUMBER_TO_REG)
                                             opCode = opcodes.ADD_BYTE_NUMBER_TO_REG;
-                                        else
-                                            throw 'ADD does not support this operands';
-                                    } else {
-                                        if (p1.type === 'register' && p2.type === 'register')
-                                            opCode = opcodes.ADD_REG_TO_REG;
-                                        else if (p1.type === 'register' && p2.type === 'regaddress')
-                                            opCode = opcodes.ADD_REGADDRESS_TO_REG;
-                                        else if (p1.type === 'register' && p2.type === 'address')
-                                            opCode = opcodes.ADD_ADDRESS_TO_REG;
-                                        else if (p1.type === 'register' && p2.type === 'number')
-                                            opCode = opcodes.ADD_NUMBER_TO_REG;
-                                        else
-                                            throw 'ADD does not support this operands';
                                     }
 
                                     code.push(opCode);
@@ -315,28 +311,26 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     p1 = getValue(match[op1_group]);
                                     p2 = getValue(match[op2_group]);
 
+                                    if (p1.type === 'register' && p2.type === 'register')
+                                        opCode = opcodes.SUB_REG_FROM_REG;
+                                    else if (p1.type === 'register' && p2.type === 'regaddress')
+                                        opCode = opcodes.SUB_REGADDRESS_FROM_REG;
+                                    else if (p1.type === 'register' && p2.type === 'address')
+                                        opCode = opcodes.SUB_ADDRESS_FROM_REG;
+                                    else if (p1.type === 'register' && p2.type === 'number')
+                                        opCode = opcodes.SUB_NUMBER_FROM_REG;
+                                    else
+                                        throw 'SUB does not support this operands';
+
                                     if (match[byte_group] !== undefined) {
-                                        if (p1.type === 'register' && p2.type === 'register')
+                                        if (opCode === opcodes.SUB_REG_FROM_REG)
                                             opCode = opcodes.SUB_BYTE_REG_FROM_REG;
-                                        else if (p1.type === 'register' && p2.type === 'regaddress')
+                                        if (opCode === opcodes.SUB_REGADDRESS_FROM_REG)
                                             opCode = opcodes.SUB_BYTE_REGADDRESS_FROM_REG;
-                                        else if (p1.type === 'register' && p2.type === 'address')
+                                        if (opCode === opcodes.SUB_ADDRESS_FROM_REG)
                                             opCode = opcodes.SUB_BYTE_ADDRESS_FROM_REG;
-                                        else if (p1.type === 'register' && p2.type === 'number')
+                                        if (opCode === opcodes.SUB_NUMBER_FROM_REG)
                                             opCode = opcodes.SUB_BYTE_NUMBER_FROM_REG;
-                                        else
-                                            throw 'SUB does not support this operands';
-                                    } else {
-                                        if (p1.type === 'register' && p2.type === 'register')
-                                            opCode = opcodes.SUB_REG_FROM_REG;
-                                        else if (p1.type === 'register' && p2.type === 'regaddress')
-                                            opCode = opcodes.SUB_REGADDRESS_FROM_REG;
-                                        else if (p1.type === 'register' && p2.type === 'address')
-                                            opCode = opcodes.SUB_ADDRESS_FROM_REG;
-                                        else if (p1.type === 'register' && p2.type === 'number')
-                                            opCode = opcodes.SUB_NUMBER_FROM_REG;
-                                        else
-                                            throw 'SUB does not support this operands';
                                     }
 
                                     code.push(opCode);
@@ -370,28 +364,26 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     p1 = getValue(match[op1_group]);
                                     p2 = getValue(match[op2_group]);
 
+                                    if (p1.type === 'register' && p2.type === 'register')
+                                        opCode = opcodes.CMP_REG_WITH_REG;
+                                    else if (p1.type === 'register' && p2.type === 'regaddress')
+                                        opCode = opcodes.CMP_REGADDRESS_WITH_REG;
+                                    else if (p1.type === 'register' && p2.type === 'address')
+                                        opCode = opcodes.CMP_ADDRESS_WITH_REG;
+                                    else if (p1.type === 'register' && p2.type === 'number')
+                                        opCode = opcodes.CMP_NUMBER_WITH_REG;
+                                    else
+                                        throw 'CMP does not support this operands';
+
                                     if (match[byte_group] !== undefined) {
-                                        if (p1.type === 'register' && p2.type === 'register')
+                                        if (opCode === opcodes.CMP_REG_WITH_REG)
                                             opCode = opcodes.CMP_BYTE_REG_WITH_REG;
-                                        else if (p1.type === 'register' && p2.type === 'regaddress')
+                                        if (opCode === opcodes.CMP_REGADDRESS_WITH_REG)
                                             opCode = opcodes.CMP_BYTE_REGADDRESS_WITH_REG;
-                                        else if (p1.type === 'register' && p2.type === 'address')
+                                        if (opCode === opcodes.CMP_ADDRESS_WITH_REG)
                                             opCode = opcodes.CMP_BYTE_ADDRESS_WITH_REG;
-                                        else if (p1.type === 'register' && p2.type === 'number')
+                                        if (opCode === opcodes.CMP_NUMBER_WITH_REG)
                                             opCode = opcodes.CMP_BYTE_NUMBER_WITH_REG;
-                                        else
-                                            throw 'CMP does not support this operands';
-                                    } else {
-                                        if (p1.type === 'register' && p2.type === 'register')
-                                            opCode = opcodes.CMP_REG_WITH_REG;
-                                        else if (p1.type === 'register' && p2.type === 'regaddress')
-                                            opCode = opcodes.CMP_REGADDRESS_WITH_REG;
-                                        else if (p1.type === 'register' && p2.type === 'address')
-                                            opCode = opcodes.CMP_ADDRESS_WITH_REG;
-                                        else if (p1.type === 'register' && p2.type === 'number')
-                                            opCode = opcodes.CMP_NUMBER_WITH_REG;
-                                        else
-                                            throw 'CMP does not support this operands';
                                     }
 
                                     code.push(opCode);
@@ -549,12 +541,9 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     break;
                                 case 'RET':
                                     checkNoExtraArg(instr, match[op1_group]);
-
                                     opCode = opcodes.RET;
-
                                     code.push(opCode);
                                     break;
-
                                 case 'MUL':
                                     p1 = getValue(match[op1_group]);
                                     checkNoExtraArg(instr, match[op2_group]);
@@ -695,9 +684,9 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     code.push(opCode);
                                     codePushOperands(p1.value, p2.value);
                                     break;
-				case 'INT':
-			            p1 = getValue(match[op1_group]);
-				    checkNoExtraArg('INT', match[op2_group]);
+                                case 'INT':
+                                    p1 = getValue(match[op1_group]);
+                                    checkNoExtraArg('INT', match[op2_group]);
 
                                     if (p1.type === 'number')
                                         opCode = opcodes.EXCEC_INT_ROUTINE;
@@ -707,14 +696,11 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     code.push(opCode);
                                     codePushOperands(p1.value);
                                     break;
-				case 'IRET':
-				    checkNoExtraArg(instr, match[op1_group]);
-
+                                case 'IRET':
+                                    checkNoExtraArg(instr, match[op1_group]);
                                     opCode = opcodes.IRET;
-
                                     code.push(opCode);
                                     break;
-					
                                 default:
                                     throw 'Invalid instruction: ' + match[2];
                             }
