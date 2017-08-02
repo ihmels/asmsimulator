@@ -8,10 +8,10 @@
     <link rel="stylesheet" href="asmsimulator.css">
 </head>
 <body>
-    <nav class="navbar navbar-inverse" role="navigation" style="background-color:#428BCA;border:0px;border-radius:0px;">
+    <nav class="navbar navbar-inverse" role="navigation" style="background-color: #428bca; border: 0px; border-radius: 0px;">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" style="color:#FFFFFF">Simple 16-bit Assembler Simulator</a>
+                <a class="navbar-brand" style="color: #fff;">Simple 16-bit Assembler Simulator</a>
             </div>
             <div class="navbar-header navbar-right">
                 <a type="button" class="btn btn-default navbar-btn" href="index.html">Simulator</a>
@@ -47,6 +47,12 @@
                 <ul>
                     <li><a href="#push">PUSH – Push to stack</a>
                     <li><a href="#pop">POP – Pop from stack</a>
+                </ul>
+            </li>
+            <li><a href="#interrupt">Interrupt instructions</a>
+                <ul>
+                    <li><a href="#int">INT – Call interrupt service routine</a>
+                    <li><a href="#iret">IRET – Exit interrupt service routine</a>
                 </ul>
             </li>
             <li><a href="#other">Other instructions</a>
@@ -92,19 +98,13 @@ Constant: Any number between 0..255 (8-bit unsigned)
 Offset for indirect addressing: Integer between -4096..+4095 (sign is mandatory)
 </pre>
         <h2 id="mov">MOV – Copy a value</h2>
-        <p>Copies a value from <em>src</em> to <em>dest</em>. The <a href="#mov">MOV</a> instruction is the only one able to directly modify the memory. <abbr title="Stack pointer">SP</abbr> can be used as operand with MOV.</p>
+        <p>Copies a value from <em>src</em> to <em>dest</em>. The <a href="#mov">MOV</a> instruction is the only one able to directly modify the memory. <abbr title="Stack Pointer">SP</abbr> can be used as operand with MOV.</p>
 <pre>
-MOV reg, reg
-MOV reg, address
-MOV reg, constant
-MOV address, reg
-MOV address, constant
-
-MOV BYTE reg, reg
-MOV BYTE reg, address
-MOV BYTE reg, constant
-MOV BYTE address, reg
-MOV BYTE address, constant
+MOV [BYTE] reg, reg
+MOV [BYTE] reg, address
+MOV [BYTE] reg, constant
+MOV [BYTE] address, reg
+MOV [BYTE] address, constant
 </pre>
         <h2 id="db">DB – Variable</h2>
         <p>Defines a variable. A variable can either be a single number, character or a string.</p>
@@ -113,71 +113,67 @@ DB constant
 </pre>
         <h2 id="math">Math operations</h2>
         <h3 id="addsub">Addition and Subtraction</h3>
-        <p>Adds two numbers together or subtract one number form another. This operations will modify the carry and zero flag. <abbr title="Stack pointer">SP</abbr> can be used as operand with ADD and SUB.</p>
+        <p>Adds two numbers together or subtract one number form another. This operations will modify the carry and zero flag. <abbr title="Stack Pointer">SP</abbr> can be used as operand with ADD and SUB.</p>
 <pre>
-ADD reg, reg
-ADD reg, address
-ADD reg, constant
+ADD [BYTE] reg, reg
+ADD [BYTE] reg, address
+ADD [BYTE] reg, constant
 
-SUB reg, reg
-SUB reg, address
-SUB reg, constant
+SUB [BYTE] reg, reg
+SUB [BYTE] reg, address
+SUB [BYTE] reg, constant
 </pre>
         <h3 id="incdec">Increment and Decrement</h3>
-        <p>Increments or decrements a register by one. This operations will modify the carry and zero flag. <abbr title="Stack pointer">SP</abbr> can be used as operand with INC and DEC.</p>
+        <p>Increments or decrements a register by one. This operations will modify the carry and zero flag. <abbr title="Stack Pointer">SP</abbr> can be used as operand with INC and DEC.</p>
 <pre>
-INC reg
-DEC reg
+INC [BYTE] reg
+DEC [BYTE] reg
 </pre>
         <h3 id="muldiv">Multiplication and division</h3>
         <p>Multiplies or divides the <em>A</em> register with the given value. This operations will modify the carry and zero flag.</p>
 <pre>
-MUL reg
-MUL address
-MUL constant
+MUL [BYTE] reg
+MUL [BYTE] address
+MUL [BYTE] constant
 
-DIV reg
-DIV address
-DIV constant
+DIV [BYTE] reg
+DIV [BYTE] address
+DIV [BYTE] constant
 </pre>
         <h3 id="logical">Logical instructions</h3>
         <p>The following logical instructions are supported: AND, OR, XOR, NOT. This operations will modify the carry and zero flag.</p>
 <pre>
-AND reg, reg
-AND reg, address
-AND reg, constant
+AND [BYTE] reg, reg
+AND [BYTE] reg, address
+AND [BYTE] reg, constant
 
-OR reg, reg
-OR reg, address
-OR reg, constant
+OR [BYTE] reg, reg
+OR [BYTE] reg, address
+OR [BYTE] reg, constant
 
-XOR reg, reg
-XOR reg, address
-XOR reg, constant
+XOR [BYTE] reg, reg
+XOR [BYTE] reg, address
+XOR [BYTE] reg, constant
 
-NOT reg
+NOT [BYTE] reg
 </pre>
         <h3 id="shift">Shift instructions</h3>
         <p>The following shift instructions are supported: SHL/SAL and SHR/SAR. As this simulator only supports unsigned numbers SHR and SAR yield the same result. This operations will modify the carry and zero flag.</p>
 <pre>
-SHL reg, reg
-SHL reg, address
-SHL reg, constant
+SHL [BYTE] reg, reg
+SHL [BYTE] reg, address
+SHL [BYTE] reg, constant
 
-SHR reg, reg
-SHR reg, address
-SHR reg, constant
+SHR [BYTE] reg, reg
+SHR [BYTE] reg, address
+SHR [BYTE] reg, constant
 </pre>
         <h2 id="cmp">CMP – Compare</h2>
-        <p>Compares two values and sets the zero flag to true if they are equal. <abbr title="Stack pointer">SP</abbr> can be used as operand with CMP. Use this instruction before a conditional jump.</p>
+        <p>Compares two values and sets the zero flag to true if they are equal. <abbr title="Stack Pointer">SP</abbr> can be used as operand with CMP. Use this instruction before a conditional jump.</p>
 <pre>
-CMP reg, reg
-CMP reg, address
-CMP reg, constant
-
-CMP BYTE reg, reg
-CMP BYTE reg, address
-CMP BYTE reg, constant
+CMP [BYTE] reg, reg
+CMP [BYTE] reg, address
+CMP [BYTE] reg, constant
 </pre>
         <h2 id="jumps">Jumps</h2>
         <h3 id="jmp">JMP – Unconditional jump</h3>
@@ -289,26 +285,29 @@ JMP address
 CALL address
 </pre>
         <h3 id="ret">RET – Exit a subroutine</h3>
-        <p>Exits a subroutines by popping the return address previously pushed by the <a href="call">CALL instruction</a>. Make sure the <abbr title="Stack pointer">SP</abbr> is balanced before calling RET otherwise the instruction pointer will have an ambiguous value.</p>
+        <p>Exits a subroutines by popping the return address previously pushed by the <a href="call">CALL instruction</a>. Make sure the <abbr title="Stack Pointer">SP</abbr> is balanced before calling RET otherwise the instruction pointer will have an ambiguous value.</p>
 <pre>
 RET
 </pre>
         <h2 id="stack">Stack instructions</h2>
         <h3 id="push">PUSH – Push to stack</h3>
-        <p>Pushes a value to the stack. The stack grows down and the current position is available in the <abbr title="Stack pointer">SP</abbr>. This instruction will decrease the SP.</p>
+        <p>Pushes a value to the stack. The stack grows down and the current position is available in the <abbr title="Stack Pointer">SP</abbr>. This instruction will decrease the SP.</p>
 <pre>
 PUSH reg
 PUSH address
 PUSH constant
 </pre>
         <h3 id="pop">POP – Pop from stack</h3>
-        <p>Pops a value from the stack to a register. This instruction will increase the <abbr title="Stack pointer">SP</abbr>.</p>
+        <p>Pops a value from the stack to a register. This instruction will increase the <abbr title="Stack Pointer">SP</abbr>.</p>
 <pre>
 POP reg
 </pre>
+	<h2 id="interrupt">Interrupt instructions</h2>
+	<h3 id="int">INT – Call interrupt service routine</h3>
+	<h3 id="iret">IRET – Exit interrupt service routine</h3>
         <h2 id="other">Other instructions</h2>
         <h3 id="hlt">HLT – Stops the processor</h3>
-        <p>Stops operation of the processor. Hit Reset button to reset <abbr title="Instruction pointer">IP</abbr> before restarting.</p>
+        <p>Stops operation of the processor. Hit Reset button to reset <abbr title="Instruction Pointer">IP</abbr> before restarting.</p>
 <pre>
 HLT
 </pre>
