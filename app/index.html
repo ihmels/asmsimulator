@@ -37,20 +37,20 @@
                 <div class="panel with-nav-tabs panel-default">
                     <div class="panel-heading">
                         <ul class="nav nav-tabs" role="tablist">
-                            <li role="presentation" class="active"><a href="#code" aria-controls="home" role="tab" data-toggle="tab">Code</a></li>
-                            <li role="presentation"><a href="#firmware" aria-controls="profile" role="tab" data-toggle="tab">Firmware</a></li>
+                            <li role="presentation" class="active"><a href="#user" role="tab" data-toggle="tab">Code (User)</a></li>
+                            <li role="presentation"><a href="#kernel" role="tab" data-toggle="tab">Code (Kernel)</a></li>
                         </ul>
                     </div>
                     <div class="panel-body">
                         <div class="tab-content">
-                            <div role="tabpanel" class="tab-pane active" id="code">
+                            <div role="tabpanel" class="tab-pane active" id="user">
                                 <form role="form">
-                                    <textarea id="sourceCode" class="form-control source-code" rows="35" data-tab-support data-select-line data-ng-model="code"></textarea>
+                                    <textarea id="sourceCode" class="form-control source-code" rows="35" data-tab-support data-select-line data-ng-model="userCode"></textarea>
                                 </form>
                             </div>
-                            <div role="tabpanel" class="tab-pane" id="firmware">
+                            <div role="tabpanel" class="tab-pane" id="kernel">
                                 <form role="form">
-                                    <textarea id="firmwareCode" class="form-control source-code" rows="35" data-tab-support data-select-line data-ng-model="firmware"></textarea>
+                                    <textarea id="kernelCode" class="form-control source-code" rows="35" data-tab-support data-select-line data-ng-model="kernelCode"></textarea>
                                 </form>
                             </div>
                         </div>
