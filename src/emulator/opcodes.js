@@ -130,7 +130,7 @@ app.service('opcodes', [function() {
         SHR_BYTE_REGADDRESS_WITH_REG: 195,
         SHR_BYTE_ADDRESS_WITH_REG: 196,
         SHR_BYTE_NUMBER_WITH_REG: 197,
-	    INT: 198
+        INT: 198
     };
 
     return opcodes;

@@ -137,9 +137,9 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                 };
 
                 var readMemory = function(address, size) {
-                    if ((address < 512 && (address < 6 || address > 15)) && !self.superVisor) {
-                        throw 'Memory-Access denied: No Supervisor';
-                    }
+                    //if ((address < 512 && (address < 6 || address > 15)) && !self.superVisor) {
+                    //    throw 'Memory-Access denied: No Supervisor';
+                    //}
                     var data = memory.load(address);
 
                     if (size > 1)
@@ -149,9 +149,9 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                 };
 
                 var writeMemory = function(address, size, data) {
-                    if ((address < 512 && (address < 6 || address > 15)) && !self.superVisor) {
-                        throw 'Memory-Access denied: No Supervisor';
-                    }
+                    //if ((address < 512 && (address < 6 || address > 15)) && !self.superVisor) {
+                    //    throw 'Memory-Access denied: No Supervisor';
+                    //}
 
                     if (size > 1) {
                         memory.store(address, data >> 8);
@@ -806,9 +806,6 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                         setGPR_SP(regTo, checkOperation(~self.gpr[regTo], 1), 1);
                         self.ip += 3;
                         break;
-
-
-
                     case opcodes.SHL_REG_WITH_REG:
                         regTo = checkGPR(readMemory(self.ip + 1, 2));
                         regFrom = checkGPR(readMemory(self.ip + 3, 2));
@@ -833,9 +830,6 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                         setGPR_SP(regTo, checkOperation(getGPR_SP(regTo, 2) << number, 2), 2);
                         self.ip += 5;
                         break;
-
-
-
                     case opcodes.SHL_BYTE_REG_WITH_REG:
                         regTo = checkGPR(readMemory(self.ip + 1, 2));
                         regFrom = checkGPR(readMemory(self.ip + 3, 2));
@@ -860,9 +854,6 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                         setGPR_SP(regTo, checkOperation(getGPR_SP(regTo, 1) << number, 1), 1);
                         self.ip += 5;
                         break;
-
-
-
                     case opcodes.SHR_REG_WITH_REG:
                         regTo = checkGPR(readMemory(self.ip + 1, 2));
                         regFrom = checkGPR(readMemory(self.ip + 3, 2));
@@ -944,7 +935,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
 
             self.gpr = [0, 0, 0, 0];
             self.sp = self.maxSP - 1;
-            self.ip = memory.startUserSpace;
+            self.ip = 16;
             self.zero = false;
             self.carry = false;
             self.fault = false;

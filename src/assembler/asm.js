@@ -1,8 +1,8 @@
 app.service('assembler', ['opcodes', function (opcodes) {
     return {
-        go: function (input) {
+        go: function (input, offset) {
             // Use https://www.debuggex.com/
-            // Matches: "label: INSTRUCTION byte (["')OPERAND1(]"'), (["')OPERAND2(]"')
+            // Matches: "label: INSTRUCTION BYTE (["')OPERAND1(]"'), (["')OPERAND2(]"')
             // GROUPS:     1         2       3           4                   7
             var regex = /^[\t ]*(?:([.A-Za-z]\w*)[:])?(?:[\t ]*([A-Za-z]{2,4})(?:[\t ]+([bB][yY][tT][eE]))?(?:[\t ]+(\[(\w+((\+|-)\d+)?)\]|\".+?\"|\'.+?\'|[.A-Za-z0-9]\w*)(?:[\t ]*[,][\t ]*(\[(\w+((\+|-)\d+)?)\]|\".+?\"|\'.+?\'|[.A-Za-z0-9]\w*))?)?)?[\t ]*(?:;.*)?$/;
 
@@ -176,7 +176,7 @@ app.service('assembler', ['opcodes', function (opcodes) {
                 if (upperLabel === 'A' || upperLabel === 'B' || upperLabel === 'C' || upperLabel === 'D')
                     throw 'Label contains keyword: ' + upperLabel;
 
-                labels[label] = code.length + 512;
+                labels[label] = code.length + offset;
             };
 
             var checkNoExtraArg = function (instr, arg) {
@@ -210,7 +210,7 @@ app.service('assembler', ['opcodes', function (opcodes) {
                             // Add mapping instr pos to line number
                             // Don't do it for DB as this is not a real instruction
                             if (instr !== 'DB') {
-                                mapping[(code.length + 512)] = i;
+                                mapping[(code.length + offset)] = i;
                             }
 
                             switch (instr) {

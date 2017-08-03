@@ -27,7 +27,7 @@ app.service('memory', [function () {
             var self = this;
 
             self.lastAccess = -1;
-            for (var i = self.startUserSpace, l = self.data.length; i < l; i++) {
+            for (var i = 0, l = self.data.length; i < l; i++) {
                 self.data[i] = 0;
             }
         }

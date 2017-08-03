@@ -21,93 +21,73 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
     $scope.outputStartIndex = 0x1E0;
     $scope.outputEndIndex = 0x1E0 + 32;
 
-    $scope.code = '; Simple example\n' +
+    $scope.userCode = '; Simple example\n' +
         '; Writes Hello World to the output\n' +
         '\n' +
         '\tJMP start\n' +
-        'hello:\tDB \"Hello World!\"\t; Variable\n' +
+        'hello:\tDB "Hello World!"\t; Variable\n' +
         '\tDB 0\t\t\t; String terminator\n' +
         '\n' +
-        'start:\n'+
-        '\tMOV C, hello\t\t; Point to var\n' +
-        '\tMOV D, 0x3E0\t\t; Point to output\n' +
-        '\tCALL print\n' +
-        '\tHLT\t\t\t; Stop execution\n' +
+        'start:\n' +
+        '\tMOV A, hello\t\t; Point to string\n' +
+        '\tMOV B, 10\t\t; Set offset on output\n' +
+        '\tINT 2\t\t\t; Call interrupt 2\n' +
+        '\tHLT\t\t\t; Stop execution\n';
+
+    $scope.kernelCode = '; Kernel code\n' +
+        '; Provides interrupt service routines for output\n' +
         '\n' +
-        'print:\t\t\t\t; print(C:*from, D:*to)\n' +
+        '\tMOV [0], output_clear\t; Add ISRs to interrupt vector table\n' +
+        '\tMOV [2], output_char\n' +
+        '\tMOV [4], output_string\n' +
+        '\tJMP 0x200\t\t; Jump to userspace\n' +
+        '\n' +
+        'output_clear:\n' +
+        '\tPUSH A\n' +
+        '\tMOV A, 0x1e0\t\t; Address of output\n' +
+        '.loop1:\tMOV BYTE [A], 0\t\t; Clear display at address\n' +
+        '\tINC A\t\t\t; Increment address\n' +
+        '\tCMP A, 0x200\t\t; Check if end of output\n' +
+        '\tJB .loop1\t\t; Jump if not\n' +
+        '\tPOP A\n' +
+        '\tIRET\n' +
+        '\n' +
+        'output_char:\n' +
+        '\tPUSH C\n' +
+        '\tMOV C, 0x1e0\t\t; Address of output\n' +
+        '\tADD C, B\t\t; Add offset to address of output\n' +
+        '\tMOV BYTE [C], A\t\t; Print character\n' +
+        '\tPOP C\n' +
+        '\tIRET\n' +
+        '\n' +
+        'output_string:\n' +
         '\tPUSH A\n' +
         '\tPUSH B\n' +
-        '\tMOV B, 0\n' +
-        '\n' +
-        '.loop:\n' +
-        '\tMOV BYTE A, [C]\t\t; Get char from var\n' +
-        '\tMOV BYTE [D], A\t\t; Write to output\n' +
-        '\tINC C\n' +
-        '\tINC D\n' +
-        '\tCMP BYTE B, [C]\t\t; Check if end\n' +
-        '\tJNZ .loop\t\t; jump if not\n' +
-        '\n' +
-        '\tPOP B\n' +
-        '\tPOP A\n' +
-        '\tRET';
-
-    /* Old firmware */
-    /* var firmware = [0x00, 0x10, 0x00, 0x2C, 0x00, 0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x32, 0x00, 0x00, 0x06, 0x00, 0x00, 0x01, 0xE0, 0x6C, 0x00, 0x00, 0x00, 0x00, 0x12, 0x00, 0x00, 0x17, 0x00, 0x00, 0x02, 0x00, 0x27, 0x00, 0x18, 0x36, 0x00, 0x00, 0x62, 0x32, 0x00, 0x02, 0x06, 0x00, 0x02, 0x01, 0xE0, 0x0A, 0x00, 0x02, 0x00, 0x01, 0x69, 0x00, 0x02, 0x00, 0x00, 0x36, 0x00, 0x02, 0x62, 0x32, 0x00, 0x02, 0x32, 0x00, 0x03, 0x06, 0x00, 0x02, 0x01, 0xE0, 0x0A, 0x00, 0x02, 0x00, 0x01, 0x67, 0x00, 0x03, 0x00, 0x00, 0x69, 0x00, 0x02, 0x00, 0x03, 0x12, 0x00, 0x02, 0x12, 0x00, 0x00, 0x06, 0x00, 0x03, 0x00, 0x00, 0x79, 0x00, 0x03, 0x00, 0x00, 0x27, 0x00, 0x52, 0x36, 0x00, 0x03, 0x36, 0x00, 0x02, 0x62 ]; */
-
-    var firmware =
-        '\tMOV A, 0x0\n' +
-        '\tMOV [A], 0x0010\n' +
-        '\tINC A\n' +
-        '\tMOV [A], 0x002C\n' +
-        '\tINC A\n' +
-	'\tMOV [A], 0x0042\n' +
-        '\tINC A\n' +
-	'\tMOV [A], 0x0000\n' +
-        '\tINC A\n' +
-	'\tMOV [A], 0x0000\n' +
-        '\tINC A\n' +
-	'\tMOV [A], 0x0000\n' +
-        '\tINC A\n' +
-	'\tMOV [A], 0x0000\n' +
-        '\tINC A\n' +
-	'\tMOV [A], 0x0000\n' +
-        '\tPUSH A\n' +
-        '\tMOV A, 0x1e0\n' +
-        '\tMOV BYTE [A], 0\n' +
-        '\tINC A\n' +
-        '\tCMP A, 0x200\n' +
-        '\tJNZ 0x18\n' +
-        '\tPOP A\n' +
-        '\tIRET\n' +
-        '\tPUSH C\n' +
-        '\tMOV C, 0x1E0\n' +
-        '\tADD C, B\n' +
-        '\tMOV BYTE [C], B\n' +
-        '\tPOP C\n' +
-        '\tIRET\n' +
         '\tPUSH C\n' +
         '\tPUSH D\n' +
-        '\tMOV C, 0x1E0\n' +
-        '\tADD C, B\n' +
-        '\tMOV BYTE D, [A]\n' +
-        '\tMOV C, [D]\n' +
-        '\tINC C\n' +
-        '\tINC A\n' +
-        '\tMOV D, 0\n' +
-        '\tCMP D, [A]\n' +
-        '\tJNZ 0x52\n' +
-        '\tPOP D\n' +
+        '\n' +
+        '\tMOV C, A\t\t; Address of string\n' +
+        '\tMOV D, 0x1e0\t\t; Address of output\n' +
+        '\tADD D, B\t\t; Add offset to address of output\n' +
+        '\n' +
+        '\tMOV BYTE A, 0\t\t; String terminator\n' +
+        '\n' +
+        '.loop2:\tMOV BYTE B, [C]\t\t; Get character\n' +
+        '\tMOV BYTE [D], B\t\t; Write character\n' +
+        '\tINC C\t\t\t; Next character address\n' +
+        '\tINC D\t\t\t; Next output address\n' +
+        '\n' +
+        '\tCMP D, 0x200\t\t; Check if end of output\n' +
+        '\tJAE .end\t\t; Jump if not\n' +
+        '\n' +
+        '\tCMP BYTE A, [C]\t\t; Check if end of string\n' +
+        '\tJNZ .loop2\t\t; jump if not\n' +
+        '\n' +
+        '.end:\tPOP D\n' +
         '\tPOP C\n' +
+        '\tPOP B\n' +
+        '\tPOP A\n' +
         '\tIRET';
-    var firmware_binary = assembler.go(firmware).code;
-
-    for(var i = 0; i < firmware_binary.length; i++){
-	memory.data[i] = firmware_binary[i];
-    }
-
-    for(i = firmware_binary.length; i < 512; i++){
-	memory.data[i] = 0;
-    }
 
     $scope.reset = function () {
         cpu.reset();
@@ -159,7 +139,7 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
     };
 
     $scope.checkPrgrmLoaded = function () {
-        for (var i = memory.startUserSpace, l = memory.data.length; i < l; i++) {
+        for (var i = 0, l = memory.data.length; i < l; i++) {
             if (memory.data[i] !== 0) {
                 return true;
             }
@@ -182,16 +162,28 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
         try {
             $scope.reset();
 
-            var assembly = assembler.go($scope.code);
-            $scope.mapping = assembly.mapping;
-            var binary = assembly.code;
-            $scope.labels = assembly.labels;
+            var userAssembly = assembler.go($scope.userCode, 512);
+            var userBinary = userAssembly.code;
+            $scope.mapping = userAssembly.mapping;
+            $scope.labels = userAssembly.labels;
+            
+            var kernelAssembly = assembler.go($scope.kernelCode, 16);
+            var kernelBinary = kernelAssembly.code;
+            
+            // Copy user binary to memory
+            if (userBinary.length > memory.data.length - 512)
+                throw 'User binary code does not fit into the memory. Max ' + (memory.data.length - 512) + ' bytes are allowed';
 
-            if ((binary.length + memory.startUserSpace) > memory.data.length)
-                throw 'Binary code does not fit into the memory. Max ' + memory.data.length + ' bytes are allowed';
-
-            for (var i = 0, l = binary.length; i < l; i++) {
-                memory.data[(i + memory.startUserSpace)] = binary[i];
+            for (var i = 0, l = userBinary.length; i < l; i++) {
+                memory.data[i + 512] = userBinary[i];
+            }
+            
+            // Copy kernel binary to memory
+            if (kernelBinary.length > memory.data.length - 512)
+                throw 'Kernel binary code does not fit into the memory. Max ' + (memory.data.length - 512 - 16) + ' bytes are allowed';
+            
+            for (var j = 0, m = kernelBinary.length; j < m; j++) {
+                memory.data[j + 16] = kernelBinary[j];
             }
         } catch (e) {
             if (e.line !== undefined) {
