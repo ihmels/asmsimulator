@@ -4,4 +4,6 @@ node_modules/
 app/angular.js
 app/asmsimulator.js
 app/bootstrap.css
+app/bootstrap.js
+app/jquery.js
 asmimulator.iml
