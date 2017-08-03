@@ -16,11 +16,19 @@ module.exports = function(grunt) {
           }
         },
         copy: {
-          js: {
+          js_angularjs: {
             src: 'bower_components/angular/angular.min.js',
             dest: 'app/angular.js'
           },
-          css: {
+          js_bootstrap: {
+            src: 'bower_components/bootstrap/dist/js/bootstrap.min.js',
+            dest: 'app/bootstrap.js'
+          },
+          js_jquery: {
+            src: 'bower_components/jquery/dist/jquery.min.js',
+            dest: 'app/jquery.js'
+          },
+          css_bootstrap: {
             src: 'bower_components/bootstrap/dist/css/bootstrap.min.css',
             dest: 'app/bootstrap.css'
           }

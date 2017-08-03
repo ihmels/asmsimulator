@@ -34,14 +34,26 @@
         <div class="alert alert-danger" data-ng-show="error">{{ error }}</div>
         <div class="row">
             <div class="col-md-6">
-                <div class="panel panel-default">
+                <div class="panel with-nav-tabs panel-default">
                     <div class="panel-heading">
-                        <h4 class="panel-title">Code</h4>
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#code" aria-controls="home" role="tab" data-toggle="tab">Code</a></li>
+                            <li role="presentation"><a href="#firmware" aria-controls="profile" role="tab" data-toggle="tab">Firmware</a></li>
+                        </ul>
                     </div>
                     <div class="panel-body">
-                        <form role="form">
-                            <textarea id="sourceCode" class="form-control source-code" rows="35" data-tab-support data-select-line data-ng-model="code"></textarea>
-                        </form>
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="code">
+                                <form role="form">
+                                    <textarea id="sourceCode" class="form-control source-code" rows="35" data-tab-support data-select-line data-ng-model="code"></textarea>
+                                </form>
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="firmware">
+                                <form role="form">
+                                    <textarea id="firmwareCode" class="form-control source-code" rows="35" data-tab-support data-select-line data-ng-model="firmware"></textarea>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -122,7 +134,7 @@
                                 <a data-ng-click="displayHex = true" data-ng-hide="displayHex">Hex</a>
                                 <a data-ng-click="displayHex = false" data-ng-show="displayHex">Decimal</a>
                                 <br>
-                                Register addressing: 
+                                Register addressing:
                                 <span style="margin-left:5px;">A:</span>
                                 <a data-ng-click="displayA = true" data-ng-hide="displayA">Show</a>
                                 <a data-ng-click="displayA = false" data-ng-show="displayA">Hide</a>
@@ -166,6 +178,8 @@
         </div>
     </div>
     <script src="angular.js"></script>
+    <script src="jquery.js"></script>
+    <script src="bootstrap.js"></script>
     <script src="asmsimulator.js"></script>
 </body>
 </html>
