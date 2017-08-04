@@ -130,7 +130,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                 };
 
                 var readMemory = function(address, size) {
-                    if ((address < 512 && && !self.supervisor)
+                    if (address < 512 && !self.supervisor)
                         throw 'Memory access denied: No supervisor';
 
                     var data = memory.load(address);
@@ -142,7 +142,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                 };
 
                 var writeMemory = function(address, size, data) {
-                    if ((address < 512 && !self.supervisor)
+                    if (address < 512 && !self.supervisor)
                         throw 'Memory access denied: No supervisor';
 
                     if (size > 1) {
