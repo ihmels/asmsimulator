@@ -151,9 +151,17 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
 
         return false;
     };
+    
+    $scope.isAsciiChar = function (value) {
+        if (value >= 32 && value <= 126) {
+            return true;
+        }
+        
+        return false;
+    };
 
     $scope.getChar = function (value) {
-        if (value != 0 && (value < 32 || value > 126)) {
+        if (value != 0 && !$scope.isAsciiChar(value)) {
             return '\uFFFD';
         }
     
