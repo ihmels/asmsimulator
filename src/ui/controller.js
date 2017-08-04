@@ -37,6 +37,7 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
     $scope.kernelCode = '; Kernel code\n' +
         '; Provides interrupt service routines for output\n' +
         '\n' +
+        '; Initialize\n' +
         '\tMOV [0], output_clear\t; Add ISRs to interrupt vector table\n' +
         '\tMOV [2], output_char\n' +
         '\tMOV [4], output_string\n' +
