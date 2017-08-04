@@ -1,169 +1,167 @@
 <!DOCTYPE html>
 <html data-ng-app="asmsimulator">
-<head>
-    <meta charset="UTF-8">
-    <title>Simple 16-bit Assembler Simulator in Javascript</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="bootstrap.css">
-    <link rel="stylesheet" href="asmsimulator.css">
-</head>
-<body data-ng-controller="Ctrl">
-    <nav class="navbar navbar-inverse" role="navigation" style="background-color:#428BCA;border:0px;border-radius:0px;">
-        <div class="container-fluid">
-            <div class="navbar-header form-inline">
-                <div class="form-group">
-                    <button type="button" class="btn btn-default navbar-btn" data-ng-click="assemble()">Assemble</button>
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-success navbar-btn" data-ng-click="run()" data-ng-hide="isRunning">▶️ Run</button>
-                        <button type="button" class="btn btn-default navbar-btn" data-ng-click="stop()" data-ng-show="isRunning">⏸ Pause</button>
-                        <button type="button" class="btn btn-default navbar-btn" data-ng-click="executeStep()" data-ng-disabled="isRunning">⮎ Step</button>
-                    </div>
-                    <button type="button" class="btn btn-default navbar-btn" data-ng-click="reset()">↺ Reset</button>
-                    <div class="input-group">
-                        <div class="input-group-addon">Clock speed</div>
-                        <select data-ng-model="speed" data-ng-options="item.speed as item.desc for item in speeds" class="form-control"></select>
-                    </div>
-                </div>
-            </div>
-            <div class="navbar-header navbar-right">
-                <a href="instruction-set.html" target="_blank" class="btn btn-default navbar-btn">💡 Help</a>
-            </div>
-        </div>
-    </nav>
-    <div class="container-fluid">
-        <div class="alert alert-danger" data-ng-show="error">{{ error }}</div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">Code</h4>
-                    </div>
-                    <div class="panel-body">
-                        <form role="form">
-                            <textarea id="sourceCode" class="form-control source-code" rows="35" data-tab-support data-select-line data-ng-model="code"></textarea>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="clearfix visible-xs visible-sm"></div>
-            <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">Output</h4>
-                    </div>
-                    <div class="panel-body source-code">
-                        <div style="float:left;" class="output"
-                             data-ng-repeat="m in memory.data | startFrom: outputStartIndex track by $index">
-                            <span>{{ getChar(m) }}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">CPU & Memory</h4>
-                    </div>
-                    <div class="panel-body">
-                        <table class="table table-condensed table-striped" style="margin-bottom: 0">
-                            <thead>
-                                <tr>
-                                    <th style="text-align:center">A</th>
-                                    <th style="text-align:center">B</th>
-                                    <th style="text-align:center">C</th>
-                                    <th style="text-align:center">D</th>
-                                    <th style="text-align:center">IP</th>
-                                    <th style="text-align:center">SP</th>
-                                    <th style="text-align:center">Z</th>
-                                    <th style="text-align:center">C</th>
-                                    <th style="text-align:center">F</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr style="text-align:center;" class="source-code">
-                                    <td><div style="margin:auto;" data-ng-class="displayA && 'marker marker-a'"><small>{{ cpu.gpr[0] | number:displayHex:4 }}</small></div></td>
-                                    <td><div style="margin:auto;" data-ng-class="displayB && 'marker marker-b'"><small>{{ cpu.gpr[1] | number:displayHex:4 }}</small></div></td>
-                                    <td><div style="margin:auto;" data-ng-class="displayC && 'marker marker-c'"><small>{{ cpu.gpr[2] | number:displayHex:4 }}</small></div></td>
-                                    <td><div style="margin:auto;" data-ng-class="displayD && 'marker marker-d'"><small>{{ cpu.gpr[3] | number:displayHex:4 }}</small></div></td>
-                                    <td><div style="margin:auto;" class="marker marker-ip"><small>{{ cpu.ip | number:displayHex:4 }}</small></div></td>
-                                    <td><div style="margin:auto;" class="marker marker-sp"><small>{{ cpu.sp | number:displayHex:4 }}</small></div></td>
-                                    <td><small>{{ cpu.zero | flag }}</small></td>
-                                    <td><small>{{ cpu.carry | flag }}</small></td>
-                                    <td><small>{{ cpu.fault | flag }}</small></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">RAM</h4>
-                    </div>
-                    <div class="panel-body">
-                        <div class="source-code memory-dump">
-                            <div class="memory-block"
-                                 data-ng-repeat="m in memory.data track by $index"
-                                 data-ng-class="getMemoryCellCss($index)">
-                                 <div data-ng-class="getMemoryInnerCellCss($index)" data-ng-switch="isInstruction($index)">
-                                     <small data-ng-switch-default>{{ m | number:displayHex:2 }}</small>
-                                     <a data-ng-switch-when="true" data-ng-click="jumpToLine($index)">
-                                         <small>{{ m | number:displayHex:2 }}</small>
-                                     </a>
-                                 </div>
-                            </div>
-                        </div>
-                        <p style="margin-top:5px;">
-                            <small>
-                                Instructions:
-                                <a data-ng-click="displayInstr = true" data-ng-hide="displayInstr">Show</a>
-                                <a data-ng-click="displayInstr = false" data-ng-show="displayInstr">Hide</a>
-                                <br>
-                                View:
-                                <a data-ng-click="displayHex = true" data-ng-hide="displayHex">Hex</a>
-                                <a data-ng-click="displayHex = false" data-ng-show="displayHex">Decimal</a>
-                                <br>
-                                Register addressing: 
-                                <span style="margin-left:5px;">A:</span>
-                                <a data-ng-click="displayA = true" data-ng-hide="displayA">Show</a>
-                                <a data-ng-click="displayA = false" data-ng-show="displayA">Hide</a>
-                                <span style="margin-left:5px;">B:</span>
-                                <a data-ng-click="displayB = true" data-ng-hide="displayB">Show</a>
-                                <a data-ng-click="displayB = false" data-ng-show="displayB">Hide</a>
-                                <span style="margin-left:5px;">C:</span>
-                                <a data-ng-click="displayC = true" data-ng-hide="displayC">Show</a>
-                                <a data-ng-click="displayC = false" data-ng-show="displayC">Hide</a>
-                                <span style="margin-left:5px;">D:</span>
-                                <a data-ng-click="displayD = true" data-ng-hide="displayD">Show</a>
-                                <a data-ng-click="displayD = false" data-ng-show="displayD">Hide</a>
-                            </small>
-                        </p>
-                    </div>
-                </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">Labels</h4>
-                    </div>
-                    <div class="panel-body source-code">
-                        <table class="table table-condensed table-striped codelabels">
-                            <tr>
-                                <th>Name</th>
-                                <th>Address</th>
-                                <th>Value</th>
-                            </tr>
-                            <tr data-ng-repeat="(name, value) in labels" class="codelabel">
-                                <td class="codelabel-name">{{ name }}</td>
-                                <td class="codelabel-line"><a data-ng-click="jumpToLine(value)">{{ value | number:displayHex:4 }}</a></td>
-                                <td class="codelabel-value">{{ memory.data[value] | number:displayHex:2 }}
-                                    <span data-ng-if="memory.data[value] >= 32 && memory.data[value] <= 126">
-                                        ('{{ getChar(memory.data[value]) }}')
-                                    </span>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script src="angular.js"></script>
-    <script src="asmsimulator.js"></script>
-</body>
+	<head>
+		<meta charset="utf-8">
+		<title>Simple 16-bit Assembler Simulator in JavaScript</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="bootstrap.css">
+		<link rel="stylesheet" href="asmsimulator.css">
+	</head>
+	<body data-ng-controller="Controller">
+		<nav class="navbar navbar-default navbar-fixed-top">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a href="index.html" class="navbar-brand">Assembler Simulator</a>
+				</div>
+				<form class="navbar-form navbar-left">
+					<button type="button" class="btn btn-default" data-ng-click="assemble()" data-ng-disabled="isRunning">Assemble</button>
+					<button type="button" class="btn btn-success" data-ng-click="run()" data-ng-hide="isRunning">▶️ Run</button>
+					<button type="button" class="btn btn-default" data-ng-click="stop()" data-ng-show="isRunning">⏸ Pause</button>
+					<button type="button" class="btn btn-default" data-ng-click="executeStep()" data-ng-disabled="isRunning">⮎ Step</button>
+					<button type="button" class="btn btn-default" data-ng-click="reset()">↺ Reset</button>
+					<div class="input-group">
+						<span class="input-group-addon">Speed</span>
+						<select data-ng-model="speed" data-ng-options="item.speed as item.desc for item in speeds" class="form-control"></select>
+					</div>
+				</form>
+				<ul class="nav navbar-right navbar-nav">
+					<li><a href="instruction-set.html" target="_blank">Instruction Set</a></li>
+				</ul>
+			</div>
+		</nav>
+		<div class="container-fluid">
+			<div class="alert alert-danger" data-ng-show="error">{{ error }}</div>
+				<div class="row">
+					<div class="col-md-6">
+						<div id="code" class="panel panel-default">
+							<div class="panel-heading">
+								<ul class="nav nav-tabs" role="tablist">
+									<li role="presentation" class="active"><a href="#code-user" role="tab" data-toggle="tab">Code (User)</a></li>
+									<li role="presentation"><a href="#code-kernel" role="tab" data-toggle="tab">Code (Kernel)</a></li>
+								</ul>
+							</div>
+							<div class="panel-body">
+								<div class="tab-content">
+									<div role="tabpanel" class="tab-pane active" id="code-user">
+										<form role="form">
+											<textarea id="userCode" class="form-control source-code" rows="50" cols="80" data-tab-support data-select-line data-ng-model="userCode"></textarea>
+										</form>
+									</div>
+									<div role="tabpanel" class="tab-pane" id="code-kernel">
+										<form role="form">
+											<textarea id="kernelCode" class="form-control source-code" rows="50" cols="80" data-tab-support data-ng-model="kernelCode"></textarea>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+					<div id="output" class="panel panel-default">
+						<div class="panel-heading">Output</div>
+						<div class="output source-code">
+							<span data-ng-repeat="m in memory.data | range:outputStartIndex:outputEndIndex track by $index">{{ getChar(m) }}</span>
+						</div>
+					</div>
+					<div id="cpu-memory" class="panel panel-default">
+						<div class="panel-heading">CPU & Memory</div>
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th><abbr title="Register A">A</abbr></th>
+									<th><abbr title="Register B">B</abbr></th>
+									<th><abbr title="Register C">C</abbr></th>
+									<th><abbr title="Register D">D</abbr></th>
+									<th><abbr title="Instruction Pointer">IP</abbr></th>
+									<th><abbr title="Stack Pointer">SP</abbr></th>
+									<th><abbr title="Zero Flag">Z</abbr></th>
+									<th><abbr title="Carry Flag">C</abbr></th>
+									<th><abbr title="Fault Flag">F</abbr></th>
+									<th><abbr title="Supervisor Flag">S</abbr></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="source-code">
+									<td><div data-ng-class="displayA && 'marker marker-a'">{{ cpu.gpr[0] | number:displayHex:4 }}</div></td>
+									<td><div data-ng-class="displayB && 'marker marker-b'">{{ cpu.gpr[1] | number:displayHex:4 }}</div></td>
+									<td><div data-ng-class="displayC && 'marker marker-c'">{{ cpu.gpr[2] | number:displayHex:4 }}</div></td>
+									<td><div data-ng-class="displayD && 'marker marker-d'">{{ cpu.gpr[3] | number:displayHex:4 }}</div></td>
+									<td><div class="marker marker-ip">{{ cpu.ip | number:displayHex:4 }}</div></td>
+									<td><div class="marker marker-sp">{{ cpu.sp | number:displayHex:4 }}</div></td>
+									<td>{{ cpu.zero | flag }}</td>
+									<td>{{ cpu.carry | flag }}</td>
+									<td>{{ cpu.fault | flag }}</td>
+									<td>{{ cpu.supervisor | flag }}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div id="ram" class="panel panel-default">
+						<div class="panel-heading">RAM</div>
+						<div class="memory-dump source-code">
+							<div class="memory-block" data-ng-repeat="m in memory.data track by $index" data-ng-class="getMemoryCellCss($index)">
+								 <div data-ng-class="getMemoryInnerCellCss($index)" data-ng-switch="isInstruction($index)" title="Address: {{ $index | number:displayHex:4 }}">
+									 <span data-ng-switch-default>{{ m | number:displayHex:2 }}</span>
+									 <a data-ng-switch-when="true" data-ng-click="jumpToLine($index)">{{ m | number:displayHex:2 }}</a>
+								 </div>
+							</div>
+						</div>
+						<ul class="list-group">
+							<li class="list-group-item">
+								Instructions:
+								<a data-ng-click="displayInstr = true" data-ng-hide="displayInstr">Show</a>
+								<a data-ng-click="displayInstr = false" data-ng-show="displayInstr">Hide</a>
+							</li>
+							<li class="list-group-item">
+								View:
+								<a data-ng-click="displayHex = true" data-ng-hide="displayHex">Hex</a>
+								<a data-ng-click="displayHex = false" data-ng-show="displayHex">Decimal</a>
+							</li>
+							<li class="list-group-item">
+								Register addressing:
+								A:
+								<a data-ng-click="displayA = true" data-ng-hide="displayA">Show</a>
+								<a data-ng-click="displayA = false" data-ng-show="displayA">Hide</a>
+								B:
+								<a data-ng-click="displayB = true" data-ng-hide="displayB">Show</a>
+								<a data-ng-click="displayB = false" data-ng-show="displayB">Hide</a>
+								C:
+								<a data-ng-click="displayC = true" data-ng-hide="displayC">Show</a>
+								<a data-ng-click="displayC = false" data-ng-show="displayC">Hide</a>
+								D:
+								<a data-ng-click="displayD = true" data-ng-hide="displayD">Show</a>
+								<a data-ng-click="displayD = false" data-ng-show="displayD">Hide</a>
+							</li>
+						</ul>
+					</div>
+					<div id="labels" class="panel panel-default">
+						<div class="panel-heading">Labels</div>
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Address</th>
+									<th>Value</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="source-code" data-ng-repeat="(name, value) in labels">
+									<td>{{ name }}</td>
+									<td><a data-ng-click="jumpToLine(value)">{{ value | number:displayHex:4 }}</a></td>
+									<td>
+										{{ memory.data[value] | number:displayHex:2 }}
+										<span data-ng-if="isAsciiChar(memory.data[value])">('{{ getChar(memory.data[value]) }}')</span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="angular.js"></script>
+		<script src="jquery.js"></script>
+		<script src="bootstrap.js"></script>
+		<script src="asmsimulator.js"></script>
+	</body>
 </html>
