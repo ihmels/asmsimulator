@@ -212,7 +212,7 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
     };
 
     $scope.jumpToLine = function (index) {
-        $document[0].getElementById('sourceCode').scrollIntoView();
+        $document[0].getElementById('userCode').scrollIntoView();
         $scope.selectedLine = $scope.mapping[index];
     };
 

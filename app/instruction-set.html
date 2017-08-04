@@ -1,78 +1,80 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <title>Simple 16-bit Assembler Simulator – Instruction Set Help</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="bootstrap.css">
-    <link rel="stylesheet" href="asmsimulator.css">
-</head>
-<body>
-    <nav class="navbar navbar-inverse" role="navigation" style="background-color: #428bca; border: 0px; border-radius: 0px;">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand" style="color: #fff;">Simple 16-bit Assembler Simulator</a>
-            </div>
-            <div class="navbar-header navbar-right">
-                <a type="button" class="btn btn-default navbar-btn" href="index.html">Simulator</a>
-            </div>
-        </div>
-    </nav>
-    <div class="container">
-        <h2>Table of Contents</h2>
-        <ul>
-            <li><a href="#intro">Introduction</a></li>
-            <li><a href="#syntax">Syntax</a></li>
-            <li><a href="#mov">MOV – Copy a value</a></li>
-            <li><a href="#db">DB – Variable</a></li>
-            <li><a href="#math">Math operations</a>
-                <ul>
-                    <li><a href="#addsub">Addition and Subtraction</a></li>
-                    <li><a href="#incdec">Increment and Decrement</a></li>
-                    <li><a href="#muldiv">Multiplication and division</a></li>
-                    <li><a href="#logical">Logical instructions</a></li>
-                    <li><a href="#shift">Shift instructions</a></li>
-                </ul>
-            </li>
-            <li><a href="#cmp">CMP – Compare</a></li>
-            <li><a href="#jumps">Jumps</a>
-                <ul>
-                    <li><a href="#jmp">JMP – Unconditional jump</a>
-                    <li><a href="#jcc">Conditional jumps</a>
-                    <li><a href="#call">CALL – Function call</a>
-                    <li><a href="#ret">RET – Exit a subroutine</a>
-                </ul>
-            </li>
-            <li><a href="#stack">Stack instructions</a>
-                <ul>
-                    <li><a href="#push">PUSH – Push to stack</a>
-                    <li><a href="#pop">POP – Pop from stack</a>
-                </ul>
-            </li>
-            <li><a href="#interrupt">Interrupt instructions</a>
-                <ul>
-                    <li><a href="#int">INT – Call interrupt service routine</a>
-                    <li><a href="#iret">IRET – Exit interrupt service routine</a>
-                </ul>
-            </li>
-            <li><a href="#other">Other instructions</a>
-                <ul>
-                    <li><a href="#hlt">HLT – Stops the processor</a>
-                </ul>
-            </li>
-        </ul>
-        <h2 id="intro">Introduction</h2>
-        <p>This simulator provides a simplified assembler syntax (based on <a href="http://www.nasm.us">NASM</a>) and is simulating a x86 like CPU. In depth documentation and introduction to assembler can be found on the following websites:</p>
-        <ul>
-            <li><a href="http://en.wikipedia.org/wiki/Assembly_language">Assembly - Wikipedia</a></li>
-            <li><a href="http://cs.smith.edu/~thiebaut/ArtOfAssembly/artofasm.html">The Art of Assembly Language Programming</a></li>
-            <li><a href="http://www.nasm.us/xdoc/2.10.09/html/nasmdoc3.html">NASM Language Documentation</a></li>
-        </ul>
-        <p>The simulator consists of a 16-bit CPU and 1024 bytes of memory (0x0 to 0x3FF). All instructions (code) and variables (data) needs to fit inside the memory. For simplicity every instruction is 1, 3 or 5 byte and every operand is 2 bytes. Therefore a <a href="#mov">MOV instruction</a> will use 5 bytes of memory. The simulator provides a console output which is memory mapped from 0x3E0 to 0x3FF. Memory mapped means that every value written to this memory block is visible on the console.</p>
-        <h2 id="syntax">Syntax</h2>
-        <p>The syntax is similar as most assemblers are using. Every instruction must be on their own line. Labels are optional and must either start with a letter or a dot (.) and end with a colon (:).</p>
-        <pre>label: instruction operands    ; Comment</pre>
-        <p>Valid number formats for constants are:</p>
+	<head>
+		<meta charset="utf-8">
+		<title>Simple 16-bit Assembler Simulator in JavaScript – Instruction Set Help</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="bootstrap.css">
+		<link rel="stylesheet" href="asmsimulator.css">
+	</head>
+	<body>
+		<nav class="navbar navbar-default navbar-fixed-top">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a href="index.html" class="navbar-brand">Assembler Simulator</a>
+				</div>
+				<ul class="nav navbar-right navbar-nav">
+					<li><a href="index.html">Simulator</a></li>
+				</ul>
+			</div>
+		</nav>
+		<div class="container">
+			<h2>Table of Contents</h2>
+			<ul>
+				<li><a href="#intro">Introduction</a></li>
+				<li><a href="#syntax">Syntax</a></li>
+				<li><a href="#mov">MOV – Copy a value</a></li>
+				<li><a href="#db">DB – Variable</a></li>
+				<li><a href="#math">Math operations</a>
+					<ul>
+						<li><a href="#addsub">Addition and Subtraction</a></li>
+						<li><a href="#incdec">Increment and Decrement</a></li>
+						<li><a href="#muldiv">Multiplication and division</a></li>
+						<li><a href="#logical">Logical instructions</a></li>
+						<li><a href="#shift">Shift instructions</a></li>
+					</ul>
+				</li>
+				<li><a href="#cmp">CMP – Compare</a></li>
+				<li><a href="#jumps">Jumps</a>
+					<ul>
+						<li><a href="#jmp">JMP – Unconditional jump</a>
+						<li><a href="#jcc">Conditional jumps</a>
+						<li><a href="#call">CALL – Function call</a>
+						<li><a href="#ret">RET – Exit a subroutine</a>
+					</ul>
+				</li>
+				<li><a href="#stack">Stack instructions</a>
+					<ul>
+						<li><a href="#push">PUSH – Push to stack</a>
+						<li><a href="#pop">POP – Pop from stack</a>
+					</ul>
+				</li>
+				<li><a href="#interrupt">Interrupt instructions</a>
+					<ul>
+						<li><a href="#int">INT – Call interrupt service routine</a>
+						<li><a href="#iret">IRET – Exit interrupt service routine</a>
+					</ul>
+				</li>
+				<li><a href="#other">Other instructions</a>
+					<ul>
+						<li><a href="#hlt">HLT – Stops the processor</a>
+					</ul>
+				</li>
+			</ul>
+			<h2 id="intro">Introduction</h2>
+			<p>This simulator provides a simplified assembler syntax (based on <a href="http://www.nasm.us">NASM</a>) and is simulating a x86 like CPU. In depth documentation and introduction to assembler can be found on the following websites:</p>
+			<ul>
+				<li><a href="http://en.wikipedia.org/wiki/Assembly_language">Assembly - Wikipedia</a></li>
+				<li><a href="http://cs.smith.edu/~thiebaut/ArtOfAssembly/artofasm.html">The Art of Assembly Language Programming</a></li>
+				<li><a href="http://www.nasm.us/xdoc/2.10.09/html/nasmdoc3.html">NASM Language Documentation</a></li>
+			</ul>
+			<p>The simulator consists of a 16-bit CPU and 1024 bytes of memory (0x0 to 0x3FF). All instructions (code) and variables (data) needs to fit inside the memory. For simplicity every instruction is 1, 3 or 5 byte and every operand is 2 bytes. Therefore a <a href="#mov">MOV instruction</a> will use 5 bytes of memory. The simulator provides a console output which is memory mapped from 0x3E0 to 0x3FF. Memory mapped means that every value written to this memory block is visible on the console.</p>
+			<h2 id="syntax">Syntax</h2>
+			<p>The syntax is similar as most assemblers are using. Every instruction must be on their own line. Labels are optional and must either start with a letter or a dot (.) and end with a colon (:).</p>
+<pre>
+label: instruction operands	; Comment
+</pre>
+			<p>Valid number formats for constants are:</p>
 <pre>
 Decimal: 200
 Decimal: 200d
@@ -80,12 +82,12 @@ Hex: 0xA4
 Octal: 0o48
 Binary: 101b
 </pre>
-        <p>It is possible to define a number using a character or multiple numbers (see instruction <a href="#db">DB</a>) by using a string.</p>
+			<p>It is possible to define a number using a character or multiple numbers (see instruction <a href="#db">DB</a>) by using a string.</p>
 <pre>
 Character: 'A'
 String: "Hello World!"
 </pre>
-        <p>Operands can either be one of the four general purpose registers, stack pointer register, a memory address or a constant. Stack pointer register (SP) can only be used as operand in <a href="#mov">MOV</a>, <a href="#addsub">ADD</a>, <a href="#addsub">SUB</a>, <a href="#cmp">CMP</a>, <a href="#incdec">INC</a> and <a href="#incdec">DEC</a> instructions. Instead of defining an address as a constant or by using a register you can use labels. The assembler will then replace the label with the corresponding constant.</p>
+			<p>Operands can either be one of the four general purpose registers, stack pointer register, a memory address or a constant. Stack pointer register (SP) can only be used as operand in <a href="#mov">MOV</a>, <a href="#addsub">ADD</a>, <a href="#addsub">SUB</a>, <a href="#cmp">CMP</a>, <a href="#incdec">INC</a> and <a href="#incdec">DEC</a> instructions. Instead of defining an address as a constant or by using a register you can use labels. The assembler will then replace the label with the corresponding constant.</p>
 <pre>
 General purpose (GP) register: A, B, C, D
 Stack pointer register: SP
@@ -97,8 +99,8 @@ Address using a label: label
 Constant: Any number between 0..255 (8-bit unsigned)
 Offset for indirect addressing: Integer between -4096..+4095 (sign is mandatory)
 </pre>
-        <h2 id="mov">MOV – Copy a value</h2>
-        <p>Copies a value from <em>src</em> to <em>dest</em>. The <a href="#mov">MOV</a> instruction is the only one able to directly modify the memory. <abbr title="Stack Pointer">SP</abbr> can be used as operand with MOV.</p>
+			<h2 id="mov">MOV – Copy a value</h2>
+			<p>Copies a value from <em>src</em> to <em>dest</em>. The <a href="#mov">MOV</a> instruction is the only one able to directly modify the memory. <abbr title="Stack Pointer">SP</abbr> can be used as operand with MOV.</p>
 <pre>
 MOV [BYTE] reg, reg
 MOV [BYTE] reg, address
@@ -106,14 +108,14 @@ MOV [BYTE] reg, constant
 MOV [BYTE] address, reg
 MOV [BYTE] address, constant
 </pre>
-        <h2 id="db">DB – Variable</h2>
-        <p>Defines a variable. A variable can either be a single number, character or a string.</p>
+			<h2 id="db">DB – Variable</h2>
+			<p>Defines a variable. A variable can either be a single number, character or a string.</p>
 <pre>
 DB constant
 </pre>
-        <h2 id="math">Math operations</h2>
-        <h3 id="addsub">Addition and Subtraction</h3>
-        <p>Adds two numbers together or subtract one number form another. This operations will modify the carry and zero flag. <abbr title="Stack Pointer">SP</abbr> can be used as operand with ADD and SUB.</p>
+			<h2 id="math">Math operations</h2>
+			<h3 id="addsub">Addition and Subtraction</h3>
+			<p>Adds two numbers together or subtract one number form another. This operations will modify the carry and zero flag. <abbr title="Stack Pointer">SP</abbr> can be used as operand with ADD and SUB.</p>
 <pre>
 ADD [BYTE] reg, reg
 ADD [BYTE] reg, address
@@ -123,14 +125,14 @@ SUB [BYTE] reg, reg
 SUB [BYTE] reg, address
 SUB [BYTE] reg, constant
 </pre>
-        <h3 id="incdec">Increment and Decrement</h3>
-        <p>Increments or decrements a register by one. This operations will modify the carry and zero flag. <abbr title="Stack Pointer">SP</abbr> can be used as operand with INC and DEC.</p>
+			<h3 id="incdec">Increment and Decrement</h3>
+			<p>Increments or decrements a register by one. This operations will modify the carry and zero flag. <abbr title="Stack Pointer">SP</abbr> can be used as operand with INC and DEC.</p>
 <pre>
 INC [BYTE] reg
 DEC [BYTE] reg
 </pre>
-        <h3 id="muldiv">Multiplication and division</h3>
-        <p>Multiplies or divides the <em>A</em> register with the given value. This operations will modify the carry and zero flag.</p>
+			<h3 id="muldiv">Multiplication and division</h3>
+			<p>Multiplies or divides the <em>A</em> register with the given value. This operations will modify the carry and zero flag.</p>
 <pre>
 MUL [BYTE] reg
 MUL [BYTE] address
@@ -140,8 +142,8 @@ DIV [BYTE] reg
 DIV [BYTE] address
 DIV [BYTE] constant
 </pre>
-        <h3 id="logical">Logical instructions</h3>
-        <p>The following logical instructions are supported: AND, OR, XOR, NOT. This operations will modify the carry and zero flag.</p>
+			<h3 id="logical">Logical instructions</h3>
+			<p>The following logical instructions are supported: AND, OR, XOR, NOT. This operations will modify the carry and zero flag.</p>
 <pre>
 AND [BYTE] reg, reg
 AND [BYTE] reg, address
@@ -157,8 +159,8 @@ XOR [BYTE] reg, constant
 
 NOT [BYTE] reg
 </pre>
-        <h3 id="shift">Shift instructions</h3>
-        <p>The following shift instructions are supported: SHL/SAL and SHR/SAR. As this simulator only supports unsigned numbers SHR and SAR yield the same result. This operations will modify the carry and zero flag.</p>
+			<h3 id="shift">Shift instructions</h3>
+			<p>The following shift instructions are supported: SHL/SAL and SHR/SAR. As this simulator only supports unsigned numbers SHR and SAR yield the same result. This operations will modify the carry and zero flag.</p>
 <pre>
 SHL [BYTE] reg, reg
 SHL [BYTE] reg, address
@@ -168,149 +170,149 @@ SHR [BYTE] reg, reg
 SHR [BYTE] reg, address
 SHR [BYTE] reg, constant
 </pre>
-        <h2 id="cmp">CMP – Compare</h2>
-        <p>Compares two values and sets the zero flag to true if they are equal. <abbr title="Stack Pointer">SP</abbr> can be used as operand with CMP. Use this instruction before a conditional jump.</p>
+			<h2 id="cmp">CMP – Compare</h2>
+			<p>Compares two values and sets the zero flag to true if they are equal. <abbr title="Stack Pointer">SP</abbr> can be used as operand with CMP. Use this instruction before a conditional jump.</p>
 <pre>
 CMP [BYTE] reg, reg
 CMP [BYTE] reg, address
 CMP [BYTE] reg, constant
 </pre>
-        <h2 id="jumps">Jumps</h2>
-        <h3 id="jmp">JMP – Unconditional jump</h3>
-        <p>Let the instruction pointer do a unconditional jump to the defined address.</p>
+			<h2 id="jumps">Jumps</h2>
+			<h3 id="jmp">JMP – Unconditional jump</h3>
+			<p>Let the instruction pointer do a unconditional jump to the defined address.</p>
 <pre>
 JMP address
 </pre>
-        <h3 id="jcc">Conditional jumps</h3>
-        <p>Let the instruction pointer do a conditional jump to the defined address. See the table below for the available conditions.</p>
-        <table class="table table-condensed table-striped">
-            <thead>
-                <tr>
-                    <th>Instruction</th>
-                    <th>Description</th>
-                    <th>Condition</th>
-                    <th>Alternatives</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>JC</td>
-                    <td>Jump if carry</td>
-                    <td>Carry = TRUE</td>
-                    <td>JB, JNAE</td>
-                </tr>
-                <tr>
-                    <td>JNC</td>
-                    <td>Jump if no carry</td>
-                    <td>Carry = FALSE</td>
-                    <td>JNB, JAE</td>
-                </tr>
-                <tr>
-                    <td>JZ</td>
-                    <td>Jump if zero</td>
-                    <td>Zero = TRUE</td>
-                    <td>JB, JE</td>
-                </tr>
-                <tr>
-                    <td>JNZ</td>
-                    <td>Jump if no zero</td>
-                    <td>Zero = FALSE</td>
-                    <td>JNE</td>
-                </tr>
-                <tr>
-                    <td>JA</td>
-                    <td>&gt;</td>
-                    <td>Carry = FALSE && Zero = FALSE</td>
-                    <td>JNBE</td>
-                </tr>
-                <tr>
-                    <td>JNBE</td>
-                    <td>not &lt;=</td>
-                    <td>Carry = FALSE && Zero = FALSE</td>
-                    <td>JA</td>
-                </tr>
-                <tr>
-                    <td>JAE</td>
-                    <td>&gt;=</td>
-                    <td>Carry = FALSE</td>
-                    <td>JNC, JNB</td>
-                </tr>
-                <tr>
-                    <td>JNB</td>
-                    <td>not &lt;</td>
-                    <td>Carry = FALSE</td>
-                    <td>JNC, JAE</td>
-                </tr>
-                <tr>
-                    <td>JB</td>
-                    <td>&lt;</td>
-                    <td>Carry = TRUE</td>
-                    <td>JC, JNAE</td>
-                </tr>
-                <tr>
-                    <td>JNAE</td>
-                    <td>not &gt;=</td>
-                    <td>Carry = TRUE</td>
-                    <td>JC, JB</td>
-                </tr>
-                <tr>
-                    <td>JBE</td>
-                    <td>&lt;=</td>
-                    <td>C = TRUE or Z = TRUE</td>
-                    <td>JNA</td>
-                </tr>
-                <tr>
-                    <td>JNA</td>
-                    <td>not &gt;</td>
-                    <td>C = TRUE or Z = TRUE</td>
-                    <td>JBE</td>
-                </tr>
-                <tr>
-                    <td>JE</td>
-                    <td>=</td>
-                    <td>Z = TRUE</td>
-                    <td>JZ</td>
-                </tr>
-                <tr>
-                    <td>JNE</td>
-                    <td>!=</td>
-                    <td>Z = FALSE</td>
-                    <td>JNZ</td>
-                </tr>
-            </tbody>
-        </table>
-        <h3 id="call">CALL – Function call</h3>
-        <p>Call can be used to jump into a subroutine (function). Pushes the instruction address of the next instruction to the stack and jumps to the specified address.</p>
+			<h3 id="jcc">Conditional jumps</h3>
+			<p>Let the instruction pointer do a conditional jump to the defined address. See the table below for the available conditions.</p>
+			<table class="table table-condensed table-striped">
+				<thead>
+					<tr>
+						<th>Instruction</th>
+						<th>Description</th>
+						<th>Condition</th>
+						<th>Alternatives</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>JC</td>
+						<td>Jump if carry</td>
+						<td>Carry = TRUE</td>
+						<td>JB, JNAE</td>
+					</tr>
+					<tr>
+						<td>JNC</td>
+						<td>Jump if no carry</td>
+						<td>Carry = FALSE</td>
+						<td>JNB, JAE</td>
+					</tr>
+					<tr>
+						<td>JZ</td>
+						<td>Jump if zero</td>
+						<td>Zero = TRUE</td>
+						<td>JB, JE</td>
+					</tr>
+					<tr>
+						<td>JNZ</td>
+						<td>Jump if no zero</td>
+						<td>Zero = FALSE</td>
+						<td>JNE</td>
+					</tr>
+					<tr>
+						<td>JA</td>
+						<td>&gt;</td>
+						<td>Carry = FALSE && Zero = FALSE</td>
+						<td>JNBE</td>
+					</tr>
+					<tr>
+						<td>JNBE</td>
+						<td>not &lt;=</td>
+						<td>Carry = FALSE && Zero = FALSE</td>
+						<td>JA</td>
+					</tr>
+					<tr>
+						<td>JAE</td>
+						<td>&gt;=</td>
+						<td>Carry = FALSE</td>
+						<td>JNC, JNB</td>
+					</tr>
+					<tr>
+						<td>JNB</td>
+						<td>not &lt;</td>
+						<td>Carry = FALSE</td>
+						<td>JNC, JAE</td>
+					</tr>
+					<tr>
+						<td>JB</td>
+						<td>&lt;</td>
+						<td>Carry = TRUE</td>
+						<td>JC, JNAE</td>
+					</tr>
+					<tr>
+						<td>JNAE</td>
+						<td>not &gt;=</td>
+						<td>Carry = TRUE</td>
+						<td>JC, JB</td>
+					</tr>
+					<tr>
+						<td>JBE</td>
+						<td>&lt;=</td>
+						<td>C = TRUE or Z = TRUE</td>
+						<td>JNA</td>
+					</tr>
+					<tr>
+						<td>JNA</td>
+						<td>not &gt;</td>
+						<td>C = TRUE or Z = TRUE</td>
+						<td>JBE</td>
+					</tr>
+					<tr>
+						<td>JE</td>
+						<td>=</td>
+						<td>Z = TRUE</td>
+						<td>JZ</td>
+					</tr>
+					<tr>
+						<td>JNE</td>
+						<td>!=</td>
+						<td>Z = FALSE</td>
+						<td>JNZ</td>
+					</tr>
+				</tbody>
+			</table>
+			<h3 id="call">CALL – Function call</h3>
+			<p>Call can be used to jump into a subroutine (function). Pushes the instruction address of the next instruction to the stack and jumps to the specified address.</p>
 <pre>
 CALL address
 </pre>
-        <h3 id="ret">RET – Exit a subroutine</h3>
-        <p>Exits a subroutines by popping the return address previously pushed by the <a href="call">CALL instruction</a>. Make sure the <abbr title="Stack Pointer">SP</abbr> is balanced before calling RET otherwise the instruction pointer will have an ambiguous value.</p>
+			<h3 id="ret">RET – Exit a subroutine</h3>
+			<p>Exits a subroutines by popping the return address previously pushed by the <a href="call">CALL instruction</a>. Make sure the <abbr title="Stack Pointer">SP</abbr> is balanced before calling RET otherwise the instruction pointer will have an ambiguous value.</p>
 <pre>
 RET
 </pre>
-        <h2 id="stack">Stack instructions</h2>
-        <h3 id="push">PUSH – Push to stack</h3>
-        <p>Pushes a value to the stack. The stack grows down and the current position is available in the <abbr title="Stack Pointer">SP</abbr>. This instruction will decrease the SP.</p>
+			<h2 id="stack">Stack instructions</h2>
+			<h3 id="push">PUSH – Push to stack</h3>
+			<p>Pushes a value to the stack. The stack grows down and the current position is available in the <abbr title="Stack Pointer">SP</abbr>. This instruction will decrease the SP.</p>
 <pre>
 PUSH reg
 PUSH address
 PUSH constant
 </pre>
-        <h3 id="pop">POP – Pop from stack</h3>
-        <p>Pops a value from the stack to a register. This instruction will increase the <abbr title="Stack Pointer">SP</abbr>.</p>
+			<h3 id="pop">POP – Pop from stack</h3>
+			<p>Pops a value from the stack to a register. This instruction will increase the <abbr title="Stack Pointer">SP</abbr>.</p>
 <pre>
 POP reg
 </pre>
-	<h2 id="interrupt">Interrupt instructions</h2>
-	<h3 id="int">INT – Call interrupt service routine</h3>
-	<h3 id="iret">IRET – Exit interrupt service routine</h3>
-        <h2 id="other">Other instructions</h2>
-        <h3 id="hlt">HLT – Stops the processor</h3>
-        <p>Stops operation of the processor. Hit Reset button to reset <abbr title="Instruction Pointer">IP</abbr> before restarting.</p>
+		<h2 id="interrupt">Interrupt instructions</h2>
+		<h3 id="int">INT – Call interrupt service routine</h3>
+		<h3 id="iret">IRET – Exit interrupt service routine</h3>
+			<h2 id="other">Other instructions</h2>
+			<h3 id="hlt">HLT – Stops the processor</h3>
+			<p>Stops operation of the processor. Hit Reset button to reset <abbr title="Instruction Pointer">IP</abbr> before restarting.</p>
 <pre>
 HLT
 </pre>
-    </div>
-</body>
+		</div>
+	</body>
 </html>
