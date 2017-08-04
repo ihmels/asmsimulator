@@ -9,20 +9,21 @@ app.controller('Controller', ['$document', '$scope', '$timeout', 'cpu', 'memory'
     $scope.displayB = false;
     $scope.displayC = false;
     $scope.displayD = false;
-    $scope.speeds = [{speed: 0.125, desc: '⅛ Hz'},
-                     {speed: 0.25, desc: '¼ Hz'},
+    $scope.speeds = [{speed: 0.25, desc: '¼ Hz'},
                      {speed: 0.5, desc: '½ Hz'},
                      {speed: 1, desc: '1 Hz'},
                      {speed: 2, desc: '2 Hz'},
                      {speed: 4, desc: '4 Hz'},
                      {speed: 8, desc: '8 Hz'},
-                     {speed: 16, desc: '16 Hz'}];
+                     {speed: 16, desc: '16 Hz'},
+                     {speed: 32, desc: '32 Hz'},
+                     {speed: 64, desc: '64 Hz'}];
     $scope.speed = 4;
     $scope.outputStartIndex = 0x1E0;
     $scope.outputEndIndex = 0x1E0 + 32;
 
     $scope.userCode = '; Simple example\n' +
-        '; Writes Hello World to the output\n' +
+        '; Writes Hello World to the output.\n' +
         '\n' +
         '\tJMP start\n' +
         'hello:\tDB "Hello World!"\t; Variable\n' +
@@ -35,7 +36,7 @@ app.controller('Controller', ['$document', '$scope', '$timeout', 'cpu', 'memory'
         '\tHLT\t\t\t; Stop execution';
 
     $scope.kernelCode = '; Kernel code\n' +
-        '; Provides interrupt service routines for output\n' +
+        '; Provides interrupt service routines for output.\n' +
         '\n' +
         '; Initialize\n' +
         '\tMOV [0], output_clear\t; Add ISRs to interrupt vector table\n' +
@@ -44,6 +45,7 @@ app.controller('Controller', ['$document', '$scope', '$timeout', 'cpu', 'memory'
         '\tPUSH 0x200\t\t; Set address of userspace\n' +
         '\tIRET\t\t\t; Jump to userspace\n' +
         '\n' +
+        '; Clear output.\n' +
         'output_clear:\n' +
         '\tPUSH A\n' +
         '\tMOV A, 0x1e0\t\t; Address of output\n' +
@@ -54,6 +56,10 @@ app.controller('Controller', ['$document', '$scope', '$timeout', 'cpu', 'memory'
         '\tPOP A\n' +
         '\tIRET\n' +
         '\n' +
+        '; Display character on output at given position.\n' +
+        '; Parameters:\n' +
+        '; A: Character\n' +
+        '; B: Offset on output\n' +
         'output_char:\n' +
         '\tPUSH C\n' +
         '\tMOV C, 0x1e0\t\t; Address of output\n' +
@@ -62,6 +68,10 @@ app.controller('Controller', ['$document', '$scope', '$timeout', 'cpu', 'memory'
         '\tPOP C\n' +
         '\tIRET\n' +
         '\n' +
+        '; Display string on output at given position.\n' +
+        '; Parameters:\n' +
+        '; A: Start address of string\n' +
+        '; B: Offset on output\n' +
         'output_string:\n' +
         '\tPUSH A\n' +
         '\tPUSH B\n' +
