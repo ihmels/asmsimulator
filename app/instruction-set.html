@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>Simple 16-bit Assembler Simulator in JavaScript – Instruction Set Help</title>
+		<title>Simple 16-bit Assembler Simulator in JavaScript – Instruction Set</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="stylesheet" href="bootstrap.css">
 		<link rel="stylesheet" href="asmsimulator.css">
@@ -68,7 +68,51 @@
 				<li><a href="http://cs.smith.edu/~thiebaut/ArtOfAssembly/artofasm.html">The Art of Assembly Language Programming</a></li>
 				<li><a href="http://www.nasm.us/xdoc/2.10.09/html/nasmdoc3.html">NASM Language Documentation</a></li>
 			</ul>
-			<p>The simulator consists of a 16-bit CPU and 1024 bytes of memory (0x0 to 0x3FF). All instructions (code) and variables (data) needs to fit inside the memory. For simplicity every instruction is 1, 3 or 5 byte and every operand is 2 bytes. Therefore a <a href="#mov">MOV instruction</a> will use 5 bytes of memory. The simulator provides a console output which is memory mapped from 0x3E0 to 0x3FF. Memory mapped means that every value written to this memory block is visible on the console.</p>
+			<p>The simulator consists of a 16-bit CPU and 1024 bytes of memory (0x0 to 0x3FF). All instructions (code) and variables (data) needs to fit inside the memory. For simplicity every instruction is 1, 3 or 5 byte and every operand is 2 bytes. Therefore a <a href="#mov">MOV instruction</a> will use 5 bytes of memory. The simulator provides a console output which is memory mapped from 0x1E0 to 0x1FF. Memory mapped means that every value written to this memory block is visible on the console.</p>
+			<p>The simulator features a supervisor mode. For this purpose a supervisor flag (S) exists. Addresses in the upper half of the memory (0x0 to 0x0x1FF) can only be accessed if the CPU runs in supervisor mode (supervisor flag must be set), otherwise the CPU switches to a fault state (fault flag will be set). The only way to switch from user mode to supervisor mode is to call an interrupt service routine.</p>
+			<p>Interrupt service routines (ISRs) must be defined in the upper half of the memory (in the kernel space) and can be called within the user or kernel space via the <a href="#int">INT</a> instruction. To register an ISR, the start address of the ISR must be copied to the interrupt vector table:</p>
+			<table class="table table-striped table-bordered">
+				<thead>
+					<tr>
+						<th>Number</th>
+						<th>Address</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>0</td>
+						<td>0x0</td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td>0x2</td>
+					</tr>
+					<tr>
+						<td>2</td>
+						<td>0x4</td>
+					</tr>
+					<tr>
+						<td>3</td>
+						<td>0x6</td>
+					</tr>
+					<tr>
+						<td>4</td>
+						<td>0x8</td>
+					</tr>
+					<tr>
+						<td>5</td>
+						<td>0xA</td>
+					</tr>
+					<tr>
+						<td>6</td>
+						<td>0xC</td>
+					</tr>
+					<tr>
+						<td>7</td>
+						<td>0xE</td>
+					</tr>
+				</tbody>
+			</table>
 			<h2 id="syntax">Syntax</h2>
 			<p>The syntax is similar as most assemblers are using. Every instruction must be on their own line. Labels are optional and must either start with a letter or a dot (.) and end with a colon (:).</p>
 <pre>
@@ -304,9 +348,17 @@ PUSH constant
 <pre>
 POP reg
 </pre>
-		<h2 id="interrupt">Interrupt instructions</h2>
-		<h3 id="int">INT – Call interrupt service routine</h3>
-		<h3 id="iret">IRET – Exit interrupt service routine</h3>
+			<h2 id="interrupt">Interrupt instructions</h2>
+			<h3 id="int">INT – Call interrupt service routine</h3>
+			<p>Calls an interrupt service routine with the given number. The <abbr title="Instruction Pointer">IP</abbr> will be saved on the stack.</p>
+<pre>
+INT constant
+</pre>
+			<h3 id="iret">IRET – Exit interrupt service routine</h3>
+			<p>Exists an interrupt service routine by jumping to the <abbr title="Instruction Pointer">IP</abbr> restored from the stack.</p>
+<pre>
+IRET
+</pre>
 			<h2 id="other">Other instructions</h2>
 			<h3 id="hlt">HLT – Stops the processor</h3>
 			<p>Stops operation of the processor. Hit Reset button to reset <abbr title="Instruction Pointer">IP</abbr> before restarting.</p>
