@@ -153,10 +153,14 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
     };
 
     $scope.getChar = function (value) {
+        if (value != 0 && (value < 32 || value > 126)) {
+            return '\uFFFD';
+        }
+    
         var text = String.fromCharCode(value);
-
+        
         if (text.trim() === '') {
-            return '\u00A0\u00A0';
+            return '\u00A0';
         } else {
             return text;
         }
