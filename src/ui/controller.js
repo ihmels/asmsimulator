@@ -41,9 +41,7 @@ app.controller('Controller', ['$document', '$scope', '$timeout', 'cpu', 'memory'
         '\tMOV [0], output_clear\t; Add ISRs to interrupt vector table\n' +
         '\tMOV [2], output_char\n' +
         '\tMOV [4], output_string\n' +
-        '\tMOV A, 0x200\t\t; Set address of userspace\n' +
-        '\tPUSH A\n' +
-        '\tMOV A, 0\n' +
+        '\tPUSH 0x200\t\t; Set address of userspace\n' +
         '\tIRET\t\t\t; Jump to userspace\n' +
         '\n' +
         'output_clear:\n' +
