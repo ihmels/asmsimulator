@@ -1,4 +1,4 @@
-app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'assembler', function ($document, $scope, $timeout, cpu, memory, assembler) {
+app.controller('Controller', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'assembler', function($document, $scope, $timeout, cpu, memory, assembler) {
     $scope.memory = memory;
     $scope.cpu = cpu;
     $scope.error = '';
@@ -32,7 +32,7 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
         '\tMOV A, hello\t\t; Point to string\n' +
         '\tMOV B, 10\t\t; Set offset on output\n' +
         '\tINT 2\t\t\t; Call interrupt 2\n' +
-        '\tHLT\t\t\t; Stop execution\n';
+        '\tHLT\t\t\t; Stop execution';
 
     $scope.kernelCode = '; Kernel code\n' +
         '; Provides interrupt service routines for output\n' +
@@ -93,14 +93,14 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
         '\tPOP A\n' +
         '\tIRET';
 
-    $scope.reset = function () {
+    $scope.reset = function() {
         cpu.reset();
         memory.reset();
         $scope.error = '';
         $scope.selectedLine = -1;
     };
 
-    $scope.executeStep = function () {
+    $scope.executeStep = function() {
         if (!$scope.checkPrgrmLoaded()) {
             $scope.assemble();
         }
@@ -122,13 +122,13 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
     };
 
     var runner;
-    $scope.run = function () {
+    $scope.run = function() {
         if (!$scope.checkPrgrmLoaded()) {
             $scope.assemble();
         }
 
         $scope.isRunning = true;
-        runner = $timeout(function () {
+        runner = $timeout(function() {
             if ($scope.executeStep() === true) {
                 $scope.run();
             } else {
@@ -137,12 +137,12 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
         }, 1000 / $scope.speed);
     };
 
-    $scope.stop = function () {
+    $scope.stop = function() {
         $timeout.cancel(runner);
         $scope.isRunning = false;
     };
 
-    $scope.checkPrgrmLoaded = function () {
+    $scope.checkPrgrmLoaded = function() {
         for (var i = 0, l = memory.data.length; i < l; i++) {
             if (memory.data[i] !== 0) {
                 return true;
@@ -151,22 +151,22 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
 
         return false;
     };
-    
-    $scope.isAsciiChar = function (value) {
+
+    $scope.isAsciiChar = function(value) {
         if (value >= 32 && value <= 126) {
             return true;
         }
-        
+
         return false;
     };
 
-    $scope.getChar = function (value) {
+    $scope.getChar = function(value) {
         if (value != 0 && !$scope.isAsciiChar(value)) {
             return '\uFFFD';
         }
-    
+
         var text = String.fromCharCode(value);
-        
+
         if (text.trim() === '') {
             return '\u00A0';
         } else {
@@ -174,7 +174,7 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
         }
     };
 
-    $scope.assemble = function () {
+    $scope.assemble = function() {
         try {
             $scope.reset();
 
@@ -182,10 +182,10 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
             var userBinary = userAssembly.code;
             $scope.mapping = userAssembly.mapping;
             $scope.labels = userAssembly.labels;
-            
+
             var kernelAssembly = assembler.go($scope.kernelCode, 16);
             var kernelBinary = kernelAssembly.code;
-            
+
             // Copy user binary to memory
             if (userBinary.length > memory.data.length - 512)
                 throw 'User binary code does not fit into the memory. Max ' + (memory.data.length - 512) + ' bytes are allowed';
@@ -193,11 +193,11 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
             for (var i = 0, l = userBinary.length; i < l; i++) {
                 memory.data[i + 512] = userBinary[i];
             }
-            
+
             // Copy kernel binary to memory
             if (kernelBinary.length > memory.data.length - 512)
                 throw 'Kernel binary code does not fit into the memory. Max ' + (memory.data.length - 512 - 16) + ' bytes are allowed';
-            
+
             for (var j = 0, m = kernelBinary.length; j < m; j++) {
                 memory.data[j + 16] = kernelBinary[j];
             }
@@ -211,19 +211,19 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
         }
     };
 
-    $scope.jumpToLine = function (index) {
+    $scope.jumpToLine = function(index) {
         $document[0].getElementById('userCode').scrollIntoView();
         $scope.selectedLine = $scope.mapping[index];
     };
 
 
-    $scope.isInstruction = function (index) {
+    $scope.isInstruction = function(index) {
         return $scope.mapping !== undefined &&
             $scope.mapping[index] !== undefined &&
             $scope.displayInstr;
     };
 
-    $scope.getMemoryCellCss = function (index) {
+    $scope.getMemoryCellCss = function(index) {
         if (index >= $scope.outputStartIndex && index < $scope.outputEndIndex) {
             return 'output-bg';
         } else if ($scope.isInstruction(index)) {
@@ -235,7 +235,7 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
         }
     };
 
-    $scope.getMemoryInnerCellCss = function (index) {
+    $scope.getMemoryInnerCellCss = function(index) {
         if (index === cpu.ip) {
             return 'marker marker-ip';
         } else if (index === cpu.sp) {

@@ -76,7 +76,7 @@ app.service('opcodes', [function() {
         SHR_REGADDRESS_WITH_REG: 95,
         SHR_ADDRESS_WITH_REG: 96,
         SHR_NUMBER_WITH_REG: 97,
-	IRET: 98,
+        IRET: 98,
 
         // Byte instructions
         MOV_BYTE_REG_TO_REG: 101,

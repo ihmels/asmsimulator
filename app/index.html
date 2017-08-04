@@ -7,7 +7,7 @@
 		<link rel="stylesheet" href="bootstrap.css">
 		<link rel="stylesheet" href="asmsimulator.css">
 	</head>
-	<body data-ng-controller="Ctrl">
+	<body data-ng-controller="Controller">
 		<nav class="navbar navbar-default navbar-fixed-top">
 			<div class="container-fluid">
 				<div class="navbar-header">
@@ -64,7 +64,7 @@
 						</div>
 					</div>
 					<div id="cpu-memory" class="panel panel-default">
-						<div class="panel-heading">CPU & Memory</div> 
+						<div class="panel-heading">CPU & Memory</div>
 						<table class="table table-striped">
 							<thead>
 								<tr>
@@ -91,7 +91,7 @@
 									<td>{{ cpu.zero | flag }}</td>
 									<td>{{ cpu.carry | flag }}</td>
 									<td>{{ cpu.fault | flag }}</td>
-									<td>{{ cpu.superVisor | flag }}</td>
+									<td>{{ cpu.supervisor | flag }}</td>
 								</tr>
 							</tbody>
 						</table>

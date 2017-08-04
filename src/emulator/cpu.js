@@ -3,46 +3,43 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
         step: function() {
             var self = this;
 
-            if (self.fault === true) {
+            if (self.fault === true)
                 throw 'FAULT. Reset to continue.';
-            }
 
             try {
                 var checkGPR = function(reg) {
-                    if (reg < 0 || reg >= self.gpr.length) {
+                    if (reg < 0 || reg >= self.gpr.length)
                         throw 'Invalid register: ' + reg;
-                    } else {
+                    else
                         return reg;
-                    }
                 };
 
                 var checkGPR_SP = function(reg) {
-                    if (reg < 0 || reg >= 1 + self.gpr.length) {
+                    if (reg < 0 || reg >= 1 + self.gpr.length)
                         throw 'Invalid register: ' + reg;
-                    } else {
+                    else
                         return reg;
-                    }
                 };
 
                 var setGPR_SP = function(reg, value, size)
                 {
-                    if(reg >= 0 && reg < self.gpr.length) {
+                    if (reg >= 0 && reg < self.gpr.length) {
                         if (size > 1)
                             self.gpr[reg] = value;
                         else
                             self.gpr[reg] = (self.gpr[reg] & 0xff00) | value & 0xff;
-                    } else if(reg == self.gpr.length) {
+                    } else if (reg == self.gpr.length) {
                         if (size > 1)
                             self.sp = value;
                         else
                             self.sp = (self.sp & 0xff00) | value & 0xff;
 
-                        // Not likely to happen, since we always get here after checkOpertion().
-                        if (self.sp < self.minSP) {
+                        // Not likely to happen, since we always get here after
+                        // checkOpertion().
+                        if (self.sp < self.minSP)
                             throw 'Stack overflow';
-                        } else if (self.sp > self.maxSP) {
+                        else if (self.sp > self.maxSP)
                             throw 'Stack underflow';
-                        }
                     } else {
                         throw 'Invalid register: ' + reg;
                     }
@@ -50,12 +47,12 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
 
                 var getGPR_SP = function(reg, size)
                 {
-                    if(reg >= 0 && reg < self.gpr.length) {
+                    if (reg >= 0 && reg < self.gpr.length) {
                         if (size > 1)
                             return self.gpr[reg];
                         else
                             return self.gpr[reg] & 0xff;
-                    } else if(reg == self.gpr.length) {
+                    } else if (reg == self.gpr.length) {
                         if (size > 1)
                             return self.sp;
                         else
@@ -86,7 +83,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                 var checkOperation = function(value, size) {
                     self.zero = false;
                     self.carry = false;
-                    
+
                     var max_value = Math.pow(256, size);
 
                     if (value >= max_value) {
@@ -103,43 +100,39 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                 };
 
                 var jump = function(newIP) {
-                    if (newIP < 0 || newIP >= memory.data.length) {
+                    if (newIP < 0 || newIP >= memory.data.length)
                         throw 'IP outside memory';
-                    } else {
+                    else
                         self.ip = newIP;
-                    }
                 };
 
                 var push = function(value) {
                     writeMemory(self.sp, 2, value);
                     self.sp -= 2;
-                    if (self.sp < self.minSP) {
+                    if (self.sp < self.minSP)
                         throw 'Stack overflow';
-                    }
                 };
 
                 var pop = function() {
                     var value = readMemory(self.sp + 2, 2);
                     self.sp += 2;
-                    if (self.sp > self.maxSP) {
+                    if (self.sp > self.maxSP)
                         throw 'Stack underflow';
-                    }
 
                     return value;
                 };
 
                 var division = function(divisor, size) {
-                    if (divisor === 0) {
+                    if (divisor === 0)
                         throw 'Division by 0';
-                    }
 
                     return Math.floor(getGPR_SP(0, size) / divisor);
                 };
 
                 var readMemory = function(address, size) {
-                    if ((address < 512 && (address < 6 || address > 15)) && !self.superVisor) {
-                        throw 'Memory-Access denied: No Supervisor';
-                    }
+                    if ((address < 512 && (address < 6 || address > 15)) && !self.supervisor)
+                        throw 'Memory-Access denied: No supervisor';
+
                     var data = memory.load(address);
 
                     if (size > 1)
@@ -149,9 +142,8 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                 };
 
                 var writeMemory = function(address, size, data) {
-                    if ((address < 512 && (address < 6 || address > 15)) && !self.superVisor) {
-                        throw 'Memory-Access denied: No Supervisor';
-                    }
+                    if ((address < 512 && (address < 6 || address > 15)) && !self.supervisor)
+                        throw 'Memory-Access denied: No supervisor';
 
                     if (size > 1) {
                         memory.store(address, data >> 8);
@@ -161,12 +153,12 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                     }
                 };
 
-                if (self.ip < 0 || self.ip >= memory.data.length) {
+                if (self.ip < 0 || self.ip >= memory.data.length)
                     throw 'Instruction pointer is outside of memory';
-                }
 
-                var regTo, regFrom, memFrom, memTo, number, isSuperVisor;
+                var regTo, regFrom, memFrom, memTo, number, isSupervisor;
                 var instr = readMemory(self.ip, 1);
+
                 switch(instr) {
                     case opcodes.NONE:
                         return false; // Abort step
@@ -440,99 +432,87 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                         break;
                     case opcodes.JC_REGADDRESS:
                         regTo = checkGPR(readMemory(self.ip + 1, 2));
-                        if (self.carry) {
+                        if (self.carry)
                             jump(self.gpr[regTo]);
-                        } else {
+                        else
                             self.ip += 3;
-                        }
                         break;
                     case opcodes.JC_ADDRESS:
                         number = readMemory(self.ip + 1, 2);
-                        if (self.carry) {
+                        if (self.carry)
                             jump(number);
-                        } else {
+                        else
                             self.ip += 3;
-                        }
                         break;
                     case opcodes.JNC_REGADDRESS:
                         regTo = checkGPR(readMemory(self.ip + 1, 2));
-                        if (!self.carry) {
+                        if (!self.carry)
                             jump(self.gpr[regTo]);
-                        } else {
+                        else
                             self.ip += 3;
-                        }
                         break;
                     case opcodes.JNC_ADDRESS:
                         number = readMemory(self.ip + 1, 2);
-                        if (!self.carry) {
+                        if (!self.carry)
                             jump(number);
-                        } else {
+                        else
                             self.ip += 3;
-                        }
                         break;
                     case opcodes.JZ_REGADDRESS:
                         regTo = checkGPR(readMemory(self.ip + 1, 2));
-                        if (self.zero) {
+                        if (self.zero)
                             jump(self.gpr[regTo]);
-                        } else {
+                        else
                             self.ip += 3;
-                        }
                         break;
                     case opcodes.JZ_ADDRESS:
                         number = readMemory(self.ip + 1, 2);
-                        if (self.zero) {
+                        if (self.zero)
                             jump(number);
-                        } else {
+                        else
                             self.ip += 3;
-                        }
                         break;
                     case opcodes.JNZ_REGADDRESS:
                         regTo = checkGPR(readMemory(self.ip + 1, 2));
-                        if (!self.zero) {
+                        if (!self.zero)
                             jump(self.gpr[regTo]);
-                        } else {
+                        else
                             self.ip += 3;
-                        }
                         break;
                     case opcodes.JNZ_ADDRESS:
                         number = readMemory(self.ip + 1, 2);
-                        if (!self.zero) {
+                        if (!self.zero)
                             jump(number);
-                        } else {
+                        else
                             self.ip += 3;
-                        }
                         break;
                     case opcodes.JA_REGADDRESS:
                         regTo = checkGPR(readMemory(self.ip + 1, 2));
-                        if (!self.zero && !self.carry) {
+                        if (!self.zero && !self.carry)
                             jump(self.gpr[regTo]);
-                        } else {
+                        else
                             self.ip += 3;
-                        }
                         break;
                     case opcodes.JA_ADDRESS:
                         number = readMemory(self.ip + 1, 2);
-                        if (!self.zero && !self.carry) {
+                        if (!self.zero && !self.carry)
                             jump(number);
-                        } else {
+                        else
                             self.ip += 3;
-                        }
                         break;
                     case opcodes.JNA_REGADDRESS: // JNA REG
                         regTo = checkGPR(readMemory(self.ip + 1, 2));
-                        if (self.zero || self.carry) {
+                        if (self.zero || self.carry)
                             jump(self.gpr[regTo]);
-                        } else {
+                        else
                             self.ip += 3;
-                        }
                         break;
                     case opcodes.JNA_ADDRESS:
                         number = readMemory(self.ip + 1, 2);
-                        if (self.zero || self.carry) {
+                        if (self.zero || self.carry)
                             jump(number);
-                        } else {
+                        else
                             self.ip += 3;
-                        }
                         break;
                     case opcodes.PUSH_REG:
                         regFrom = checkGPR(readMemory(self.ip + 1, 2));
@@ -903,20 +883,21 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                         self.ip += 5;
                         break;
                     case opcodes.INT:
-                        self.superVisor = true;
+                        self.supervisor = true;
                         number = readMemory(self.ip + 1, 2);
-                        if (number <= 2) {
-                            isSuperVisor = true;
-                        } else {
-                            isSuperVisor = false;
-                        }
+
+                        if (number <= 2)
+                            isSupervisor = true;
+                        else
+                            isSupervisor = false;
+
                         number = readMemory(number * 2, 2);
-                        self.superVisor = isSuperVisor;
+                        self.supervisor = isSupervisor;
                         push(self.ip + 3);
                         jump(number);
                         break;
                     case opcodes.IRET:
-                        self.superVisor = false;
+                        self.supervisor = false;
                         jump(pop());
                         break;
                     default:
@@ -939,7 +920,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
             self.zero = false;
             self.carry = false;
             self.fault = false;
-	    self.superVisor = true;
+	    self.supervisor = true;
         }
     };
 

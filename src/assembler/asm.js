@@ -19,7 +19,8 @@ app.service('assembler', ['opcodes', function (opcodes) {
             var code = [];
             // Contains the mapping from instructions to assembler line
             var mapping = {};
-            // Hash map of label used to replace the labels after the assembler generated the code
+            // Hash map of label used to replace the labels after the assembler
+            // generated the code
             var labels = {};
             // Hash of uppercase labels used to detect duplicates
             var normalizedLabels = {};
@@ -29,38 +30,36 @@ app.service('assembler', ['opcodes', function (opcodes) {
 
             // Allowed formats: 200, 200d, 0xA4, 0o48, 101b
             var parseNumber = function (input) {
-                if (input.slice(0, 2) === '0x') {
+                if (input.slice(0, 2) === '0x')
                     return parseInt(input.slice(2), 16);
-                } else if (input.slice(0, 2) === '0o') {
+                else if (input.slice(0, 2) === '0o')
                     return parseInt(input.slice(2), 8);
-                } else if (input.slice(input.length - 1) === 'b') {
+                else if (input.slice(input.length - 1) === 'b')
                     return parseInt(input.slice(0, input.length - 1), 2);
-                } else if (input.slice(input.length - 1) === 'd') {
+                else if (input.slice(input.length - 1) === 'd')
                     return parseInt(input.slice(0, input.length - 1), 10);
-                } else if (regexNum.exec(input)) {
+                else if (regexNum.exec(input))
                     return parseInt(input, 10);
-                } else {
+                else
                     throw 'Invalid number format';
-                }
             };
 
             // Allowed registers: A, B, C, D, SP
             var parseRegister = function (input) {
                 input = input.toUpperCase();
 
-                if (input === 'A') {
+                if (input === 'A')
                     return 0;
-                } else if (input === 'B') {
+                else if (input === 'B')
                     return 1;
-                } else if (input === 'C') {
+                else if (input === 'C')
                     return 2;
-                } else if (input === 'D') {
+                else if (input === 'D')
                     return 3;
-                } else if (input === 'SP') {
+                else if (input === 'SP')
                     return 4;
-                } else {
+                else
                     return undefined;
-                }
             };
 
             var parseOffsetAddressing = function (input) {
@@ -68,45 +67,46 @@ app.service('assembler', ['opcodes', function (opcodes) {
                 var m = 0;
                 var base = 0;
 
-                if (input[0] === 'A') {
+                if (input[0] === 'A')
                     base = 0;
-                } else if (input[0] === 'B') {
+                else if (input[0] === 'B')
                     base = 1;
-                } else if (input[0] === 'C') {
+                else if (input[0] === 'C')
                     base = 2;
-                } else if (input[0] === 'D') {
+                else if (input[0] === 'D')
                     base = 3;
-                } else if (input.slice(0, 2) === 'SP') {
+                else if (input.slice(0, 2) === 'SP')
                     base = 4;
-                } else {
+                else
                     return undefined;
-                }
-                var offset_start = 1;
-                if (base === 4) {
-                    offset_start = 2;
-                }
 
-                if (input[offset_start] === '-') {
+                var offset_start = 1;
+
+                if (base === 4)
+                    offset_start = 2;
+
+                if (input[offset_start] === '-')
                     m = -1;
-                } else if (input[offset_start] === '+') {
+                else if (input[offset_start] === '+')
                     m = 1;
-                } else {
+                else
                     return undefined;
-                }
 
                 var offset = m * parseInt(input.slice(offset_start + 1), 10);
 
                 if (offset < -4096 || offset > 4095)
                     throw 'Offset must be a value between -16 and 15';
 
-                if (offset < 0) {
-                    offset = 8191 + offset; // two's complement representation in 5-bit
-                }
+                if (offset < 0)
+                    // two's complement representation in 5-bit
+                    offset = 8191 + offset;
 
-                return offset * 8 + base; // shift offset 3 bits right and add code for register
+                // shift offset 3 bits right and add code for register
+                return offset * 8 + base;
             };
 
-            // Allowed: Register, Label or Number; SP+/-Number is allowed for 'regaddress' type
+            // Allowed: Register, Label or Number; SP+/-Number is allowed for
+            // 'regaddress' type
             var parseRegOrNumber = function (input, typeReg, typeNumber) {
                 var register = parseRegister(input);
 
@@ -114,23 +114,21 @@ app.service('assembler', ['opcodes', function (opcodes) {
                     return {type: typeReg, value: register};
                 } else {
                     var label = parseLabel(input);
+
                     if (label !== undefined) {
                         return {type: typeNumber, value: label};
                     } else {
                         if (typeReg === 'regaddress') {
-
                             register = parseOffsetAddressing(input);
 
-                            if (register !== undefined) {
+                            if (register !== undefined)
                                 return {type: typeReg, value: register};
-                            }
                         }
 
                         var value = parseNumber(input);
 
-                        if (isNaN(value)) {
+                        if (isNaN(value))
                             throw 'Not a ' + typeNumber + ': ' + value;
-                        }
                         else if (value < 0 || value > 65535)
                             throw typeNumber + ' must have a value between 0 and 65535';
 
@@ -152,13 +150,13 @@ app.service('assembler', ['opcodes', function (opcodes) {
                         var text = input.slice(1, input.length - 1);
                         var chars = [];
 
-                        for (var i = 0, l = text.length; i < l; i++) {
+                        for (var i = 0, l = text.length; i < l; i++)
                             chars.push(text.charCodeAt(i));
-                        }
 
                         return {type: 'numbers', value: chars};
                     case '\'': // 'C'
                         var character = input.slice(1, input.length - 1);
+
                         if (character.length > 1)
                             throw 'Only one character is allowed. Use String instead';
 
@@ -170,6 +168,7 @@ app.service('assembler', ['opcodes', function (opcodes) {
 
             var addLabel = function (label) {
                 var upperLabel = label.toUpperCase();
+
                 if (upperLabel in normalizedLabels)
                     throw 'Duplicate label: ' + label;
 
@@ -180,38 +179,35 @@ app.service('assembler', ['opcodes', function (opcodes) {
             };
 
             var checkNoExtraArg = function (instr, arg) {
-                if (arg !== undefined) {
+                if (arg !== undefined)
                     throw instr + ': too many arguments';
-                }
             };
 
             var codePushOperands = function () {
-                for (var i = 0; i < arguments.length; i++) {
-                    if (angular.isNumber(arguments[i])) {
+                for (var i = 0; i < arguments.length; i++)
+                    if (angular.isNumber(arguments[i]))
                         code.push(arguments[i] >> 8, arguments[i] & 0xff);
-                    } else {
+                    else
                         code.push(arguments[i], arguments[i]);
-                    }
-                }
             };
 
             for (var i = 0, l = lines.length; i < l; i++) {
                 try {
                     var match = regex.exec(lines[i]);
+
                     if (match[1] !== undefined || match[2] !== undefined) {
-                        if (match[1] !== undefined) {
+                        if (match[1] !== undefined)
                             addLabel(match[1]);
-                        }
 
                         if (match[2] !== undefined) {
                             var instr = match[2].toUpperCase();
                             var p1, p2, opCode;
 
                             // Add mapping instr pos to line number
-                            // Don't do it for DB as this is not a real instruction
-                            if (instr !== 'DB') {
+                            // Don't do it for DB as this is not a real
+                            // instruction
+                            if (instr !== 'DB')
                                 mapping[(code.length + offset)] = i;
-                            }
 
                             switch (instr) {
                                 case 'DB':
@@ -220,9 +216,8 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     if (p1.type === 'number')
                                         code.push(p1.value);
                                     else if (p1.type === 'numbers')
-                                        for (var j = 0, k = p1.value.length; j < k; j++) {
+                                        for (var j = 0, k = p1.value.length; j < k; j++)
                                             code.push(p1.value[j]);
-                                        }
                                     else
                                         throw 'DB does not support this operand';
 
@@ -232,7 +227,6 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     opCode = opcodes.NONE;
                                     code.push(opCode);
                                     break;
-
                                 case 'MOV':
                                     p1 = getValue(match[op1_group]);
                                     p2 = getValue(match[op2_group]);
@@ -345,10 +339,9 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     else
                                         throw 'INC does not support this operand';
 
-                                    if (match[byte_group] !== undefined) {
+                                    if (match[byte_group] !== undefined)
                                         if (opCode === opcodes.INC_REG)
                                             opCode = opcodes.INC_BYTE_REG;
-                                    }
 
                                     code.push(opCode);
                                     codePushOperands(p1.value);
@@ -362,10 +355,9 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     else
                                         throw 'DEC does not support this operand';
 
-                                    if (match[byte_group] !== undefined) {
+                                    if (match[byte_group] !== undefined)
                                         if (opCode === opcodes.DEC_REG)
                                             opCode = opcodes.DEC_BYTE_REG;
-                                    }
 
                                     code.push(opCode);
                                     codePushOperands(p1.value);
@@ -568,7 +560,7 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                         opCode = opcodes.MUL_NUMBER;
                                     else
                                         throw 'MUL does not support this operand';
-                                        
+
                                     if (match[byte_group] !== undefined) {
                                         if (opCode === opcodes.MUL_REG)
                                             opCode = opcodes.MUL_BYTE_REG;
@@ -597,7 +589,7 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                         opCode = opcodes.DIV_NUMBER;
                                     else
                                         throw 'DIV does not support this operand';
-                                        
+
                                     if (match[byte_group] !== undefined) {
                                         if (opCode === opcodes.DIV_REG)
                                             opCode = opcodes.DIV_BYTE_REG;
@@ -708,10 +700,9 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     else
                                         throw 'NOT does not support this operand';
 
-                                    if (match[byte_group] !== undefined) {
+                                    if (match[byte_group] !== undefined)
                                         if (opCode === opcodes.NOT_REG)
                                             opCode = opcodes.NOT_BYTE_REG;
-                                    }
 
                                     code.push(opCode);
                                     codePushOperands(p1.value);
@@ -731,7 +722,7 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                         opCode = opcodes.SHL_NUMBER_WITH_REG;
                                     else
                                         throw instr + ' does not support this operands';
-                                        
+
                                     if (match[byte_group] !== undefined) {
                                         if (opCode === opcodes.SHL_REG_WITH_REG)
                                             opCode = opcodes.SHL_BYTE_REG_WITH_REG;
@@ -761,7 +752,7 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                         opCode = opcodes.SHR_NUMBER_WITH_REG;
                                     else
                                         throw instr + ' does not support this operands';
-                                        
+
                                     if (match[byte_group] !== undefined) {
                                         if (opCode === opcodes.SHR_REG_WITH_REG)
                                             opCode = opcodes.SHR_BYTE_REG_WITH_REG;
@@ -798,11 +789,12 @@ app.service('assembler', ['opcodes', function (opcodes) {
                             }
                         }
                     } else {
-                        // Check if line starts with a comment otherwise the line contains an error and can not be parsed
+                        // Check if line starts with a comment otherwise the
+                        // line contains an error and can not be parsed.
                         var line = lines[i].trim();
-                        if (line !== '' && line.slice(0, 1) !== ';') {
+
+                        if (line !== '' && line.slice(0, 1) !== ';')
                             throw 'Syntax error';
-                        }
                     }
                 } catch (e) {
                     throw {error: e, line: i};
@@ -818,7 +810,6 @@ app.service('assembler', ['opcodes', function (opcodes) {
                         code[i] = labels[label] >> 8;
                         code[i+1] = labels[label] & 0xff;
                     } else {
-
                         throw {error: 'Undefined label: ' + code[i]};
                     }
                 }
