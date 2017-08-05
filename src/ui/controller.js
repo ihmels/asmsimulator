@@ -19,8 +19,12 @@ app.controller('Controller', ['$document', '$scope', '$timeout', 'cpu', 'memory'
                      {speed: 32, desc: '32 Hz'},
                      {speed: 64, desc: '64 Hz'}];
     $scope.speed = 4;
-    $scope.outputStartIndex = 0x1E0;
-    $scope.outputEndIndex = 0x1E0 + 32;
+    $scope.kernelStartIndex = 0x10;
+    $scope.kernelEndIndex = 0x1ff;
+    $scope.userStartIndex = 0x200;
+    $scope.userEndIndex = 0x3ff;
+    $scope.outputStartIndex = 0x1e0;
+    $scope.outputEndIndex = 0x1ff;
 
     $scope.userCode = '; Simple example\n' +
         '; Writes Hello World to the output.\n' +
@@ -186,29 +190,29 @@ app.controller('Controller', ['$document', '$scope', '$timeout', 'cpu', 'memory'
         try {
             $scope.reset();
 
-            var userAssembly = assembler.go($scope.userCode, 512);
-            var userBinary = userAssembly.code;
-            $scope.mapping = userAssembly.mapping;
-            $scope.labels = userAssembly.labels;
+            var kernelLength = $scope.kernelEndIndex - $scope.kernelStartIndex + 1;
+            var userLength = $scope.userEndIndex - $scope.userStartIndex + 1;
 
-            var kernelAssembly = assembler.go($scope.kernelCode, 16);
-            var kernelBinary = kernelAssembly.code;
+            var assembly = assembler.go($scope.kernelCode, $scope.kernelStartIndex);
+            var binary = assembly.code;
 
-            // Copy user binary to memory
-            if (userBinary.length > memory.data.length - 512)
-                throw 'User binary code does not fit into the memory. Max ' + (memory.data.length - 512) + ' bytes are allowed';
+            if (binary.length > kernelLength)
+                throw {error: 'Kernel binary does not fit into memory'};
 
-            for (var i = 0, l = userBinary.length; i < l; i++) {
-                memory.data[i + 512] = userBinary[i];
-            }
+            for (i = 0, l = binary.length; i < l; i++)
+                memory.data[i + $scope.kernelStartIndex] = binary[i];
 
-            // Copy kernel binary to memory
-            if (kernelBinary.length > memory.data.length - 512)
-                throw 'Kernel binary code does not fit into the memory. Max ' + (memory.data.length - 512 - 16) + ' bytes are allowed';
+            assembly = assembler.go($scope.userCode, $scope.userStartIndex);
+            binary = assembly.code;
 
-            for (var j = 0, m = kernelBinary.length; j < m; j++) {
-                memory.data[j + 16] = kernelBinary[j];
-            }
+            if (binary.length > userLength)
+                throw {error: 'User binary does not fit into memory'};
+
+            for (i = 0, l = binary.length; i < l; i++)
+                memory.data[i + $scope.userStartIndex] = binary[i];
+
+            $scope.mapping = assembly.mapping;
+            $scope.labels = assembly.labels;
         } catch (e) {
             if (e.line !== undefined) {
                 $scope.error = 'Line ' + (e.line + 1) + ' | ' + e.error;
@@ -232,7 +236,7 @@ app.controller('Controller', ['$document', '$scope', '$timeout', 'cpu', 'memory'
     };
 
     $scope.getMemoryCellCss = function(index) {
-        if (index >= $scope.outputStartIndex && index < $scope.outputEndIndex) {
+        if (index >= $scope.outputStartIndex && index <= $scope.outputEndIndex) {
             return 'output-bg';
         } else if ($scope.isInstruction(index)) {
             return 'instr-bg';

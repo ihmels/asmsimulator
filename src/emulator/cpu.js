@@ -21,8 +21,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                         return reg;
                 };
 
-                var setGPR_SP = function(reg, value, size)
-                {
+                var setGPR_SP = function(reg, value, size) {
                     if (reg >= 0 && reg < self.gpr.length) {
                         if (size > 1)
                             self.gpr[reg] = value;
@@ -45,8 +44,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                     }
                 };
 
-                var getGPR_SP = function(reg, size)
-                {
+                var getGPR_SP = function(reg, size) {
                     if (reg >= 0 && reg < self.gpr.length) {
                         if (size > 1)
                             return self.gpr[reg];
@@ -890,8 +888,8 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                         jump(isr);
                         break;
                     case opcodes.IRET:
-                        self.supervisor = false;
                         jump(pop());
+                        self.supervisor = false;
                         break;
                     default:
                         throw 'Invalid op code: ' + instr;
@@ -905,11 +903,11 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
         reset: function() {
             var self = this;
             self.maxSP = 0x3FF;
-            self.minSP = 0;
+            self.minSP = 0x200;
 
             self.gpr = [0, 0, 0, 0];
             self.sp = self.maxSP - 1;
-            self.ip = 16;
+            self.ip = 0xf;
             self.zero = false;
             self.carry = false;
             self.fault = false;
