@@ -1,6 +1,6 @@
 {
   "name": "asmsimulator",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "license": "MIT",
   "repository": {
@@ -11,7 +11,7 @@
     "url": "https://github.com/ihmels/asmsimulator/issues"
   },
   "homepage": "https://github.com/ihmels/asmsimulator#readme",
-  "description": "Simple 8-bit Assembler Simulator in JavaScript",
+  "description": "Simple 16-bit Assembler Simulator in JavaScript",
   "devDependencies": {
     "grunt": "~1.0.1",
     "grunt-contrib-connect": "~1.0.2",
