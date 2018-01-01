@@ -10,15 +10,38 @@ module.exports = function(grunt) {
           dest: 'public/'
         },
         deps: {
-          expand: true,
-          flatten: true,
-          src: [
-            'node_modules/angular/angular.min.js',
-            'node_modules/bootstrap/dist/js/bootstrap.min.js',
-            'node_modules/jquery/dist/jquery.min.js',
-            'node_modules/bootstrap/dist/css/bootstrap.min.css'
-          ],
-          dest: 'public/'
+          files: [
+            {
+              expand: true,
+              flatten: true,
+              src: 'node_modules/angular/angular.min.js',
+              dest: 'public/js/'
+            },
+            {
+              expand: true,
+              flatten: true,
+              src: 'node_modules/jquery/dist/jquery.min.js',
+              dest: 'public/js/'
+            },
+            {
+              expand: true,
+              flatten: true,
+              src: 'node_modules/bootstrap/dist/js/bootstrap.min.js',
+              dest: 'public/js/'
+            },
+            {
+              expand: true,
+              flatten: true,
+              src: 'node_modules/bootstrap/dist/css/bootstrap.min.css',
+              dest: 'public/css/'
+            },
+            {
+              expand: true,
+              flatten: true,
+              src: 'node_modules/bootstrap/dist/fonts/*',
+              dest: 'public/fonts/'
+            }
+          ]
         }
       },
       jshint: {

@@ -4,7 +4,7 @@
 		<meta charset="utf-8">
 		<title>Simple 16-bit Assembler Simulator in JavaScript</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link rel="stylesheet" href="bootstrap.min.css">
+		<link rel="stylesheet" href="css/bootstrap.min.css">
 		<link rel="stylesheet" href="app.css">
 	</head>
 	<body data-ng-controller="Controller">
@@ -14,11 +14,11 @@
 					<a href="index.html" class="navbar-brand">Assembler Simulator</a>
 				</div>
 				<form class="navbar-form navbar-left">
-					<button type="button" class="btn btn-default" data-ng-click="assemble()" data-ng-disabled="isRunning">Assemble</button>
-					<button type="button" class="btn btn-success" data-ng-click="run()" data-ng-hide="isRunning">▶️ Run</button>
-					<button type="button" class="btn btn-default" data-ng-click="stop()" data-ng-show="isRunning">⏸ Pause</button>
-					<button type="button" class="btn btn-default" data-ng-click="executeStep()" data-ng-disabled="isRunning">⮎ Step</button>
-					<button type="button" class="btn btn-default" data-ng-click="reset()">↺ Reset</button>
+					<button type="button" class="btn btn-default" data-ng-click="assemble()" data-ng-disabled="isRunning"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Assemble</button>
+					<button type="button" class="btn btn-success" data-ng-click="run()" data-ng-hide="isRunning"><span class="glyphicon glyphicon-play" aria-hidden="true"></span> Run</button>
+					<button type="button" class="btn btn-default" data-ng-click="stop()" data-ng-show="isRunning"><span class="glyphicon glyphicon-pause" aria-hidden="true"></span> Pause</button>
+					<button type="button" class="btn btn-default" data-ng-click="executeStep()" data-ng-disabled="isRunning"><span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span> Step</button>
+					<button type="button" class="btn btn-default" data-ng-click="reset()"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Reset</button>
 					<div class="input-group">
 						<span class="input-group-addon">Speed</span>
 						<select data-ng-model="speed" data-ng-options="item.speed as item.desc for item in speeds" class="form-control"></select>
@@ -159,9 +159,9 @@
 				</div>
 			</div>
 		</div>
-		<script src="angular.min.js"></script>
-		<script src="jquery.min.js"></script>
-		<script src="bootstrap.min.js"></script>
+		<script src="js/angular.min.js"></script>
+		<script src="js/jquery.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
 		<script src="app.min.js"></script>
 	</body>
 </html>
