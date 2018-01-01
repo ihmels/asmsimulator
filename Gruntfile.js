@@ -28,15 +28,27 @@ module.exports = function(grunt) {
       watch: {
         files: ['<%= jshint.files %>'],
         tasks: ['jshint', 'uglify']
-      }
+      },
+      compress: {
+        dist: {
+          options: {
+            archive: 'dist/asmsimulator-<%= pkg.version %>.zip',
+          },
+          expand: true,
+          cwd: 'app/',
+          src: ['**'],
+          dest: 'asmsimulator/'
+        }
+      },
   });
 
+  grunt.loadNpmTasks('grunt-contrib-compress');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
-  grunt.registerTask('default', ['jshint', 'copy', 'uglify']);
+  grunt.registerTask('default', ['copy', 'jshint', 'uglify']);
+  grunt.registerTask('release', ['default', 'compress']);
 
 };
-
