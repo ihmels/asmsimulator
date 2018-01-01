@@ -3,7 +3,13 @@ module.exports = function(grunt) {
   grunt.initConfig({
       pkg: grunt.file.readJSON('package.json'),
       copy: {
-        dist: {
+        app: {
+          expand: true,
+          cwd: 'app/',
+          src: '**/*.{css,html}',
+          dest: 'public/'
+        },
+        deps: {
           expand: true,
           flatten: true,
           src: [
@@ -12,16 +18,16 @@ module.exports = function(grunt) {
             'node_modules/jquery/dist/jquery.min.js',
             'node_modules/bootstrap/dist/css/bootstrap.min.css'
           ],
-          dest: 'app/'
+          dest: 'public/'
         }
       },
       jshint: {
-        files: ['Gruntfile.js', 'src/**/*.js']
+        app: ['Gruntfile.js', 'app/**/*.js']
       },
       uglify: {
-        dist: {
+        app: {
           files: {
-            'app/asmsimulator.js': ['src/app.js', 'src/**/*.js']
+            'public/app.min.js': 'app/**/*.js'
           }
         }
       },
@@ -35,7 +41,7 @@ module.exports = function(grunt) {
             archive: 'dist/asmsimulator-<%= pkg.version %>.zip',
           },
           expand: true,
-          cwd: 'app/',
+          cwd: 'public/',
           src: ['**'],
           dest: 'asmsimulator/'
         }
