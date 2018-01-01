@@ -10,8 +10,8 @@ A simulator which provides a simplified assembler syntax (based on NASM) and is 
 - Console output
 
 ## How to build
-Make sure you have [Grunt][2] and [Bower][3] installed. Install dependencies by running `npm install`. This will also install Bower packages. Then run `grunt` to build the project.
+Make sure you have [Grunt][2] installed. Install dependencies by running `npm install`. Then run `grunt` to build the project.
 
 [1]: https://ihmels.github.io/asmsimulator/ "Simple 16-bit Assembler Simulator in JavaScript"
 [2]: https://gruntjs.com/ "Grunt: The JavaScript Task Runner"
-[3]: https://bower.io/ "Bower — a package manager for the web"
+
