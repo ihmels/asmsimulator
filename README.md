@@ -10,9 +10,9 @@ A simulator which provides a simplified assembler syntax (based on NASM) and is 
 - Console output
 
 ## How to build
-Make sure you have [Node.js][2], [npm][3] and [Grunt][4] installed. Install dependencies by running `npm install`. Then run `grunt` to build the project. The build will be located in the `public/` directory.
+Make sure you have [Node.js][2], [npm][3] and [Gulp][4] installed. Install dependencies by running `npm install`. Then run `gulp` to build the project. The build will be located in the `public/` directory.
 
 [1]: https://ihmels.github.io/asmsimulator/ "Simple 16-bit Assembler Simulator in JavaScript"
 [2]: https://nodejs.org/en/ "Node.js"
 [3]: https://www.npmjs.com/ "npm"
-[4]: https://gruntjs.com/ "Grunt: The JavaScript Task Runner"
+[4]: https://gulpjs.com/ "gulp.js"

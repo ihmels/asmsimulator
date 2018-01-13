@@ -13,12 +13,13 @@
   "homepage": "https://github.com/ihmels/asmsimulator#readme",
   "description": "Simple 16-bit Assembler Simulator in JavaScript",
   "devDependencies": {
-    "grunt": "^1.0.1",
-    "grunt-contrib-compress": "^1.4.3",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-jshint": "^1.1.0",
-    "grunt-contrib-uglify": "^2.3.0",
-    "grunt-contrib-watch": "^1.0.0"
+    "del": "^3.0.0",
+    "gulp": "^4.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-jshint": "^2.1.0",
+    "gulp-uglify": "^3.0.0",
+    "gulp-zip": "^4.1.0",
+    "jshint": "^2.9.5"
   },
   "dependencies": {
     "angular": "^1.6.8",
