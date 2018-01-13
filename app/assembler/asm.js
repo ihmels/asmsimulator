@@ -4,7 +4,7 @@ app.service('assembler', ['opcodes', function (opcodes) {
             // Use https://www.debuggex.com/
             // Matches: "label: INSTRUCTION BYTE (["')OPERAND1(]"'), (["')OPERAND2(]"')
             // GROUPS:     1         2       3           4                   7
-            var regex = /^[\t ]*(?:([.A-Za-z]\w*)[:])?(?:[\t ]*([A-Za-z]{2,4})(?:[\t ]+([bB][yY][tT][eE]))?(?:[\t ]+(\[(\w+((\+|-)\d+)?)\]|\".+?\"|\'.+?\'|[.A-Za-z0-9]\w*)(?:[\t ]*[,][\t ]*(\[(\w+((\+|-)\d+)?)\]|\".+?\"|\'.+?\'|[.A-Za-z0-9]\w*))?)?)?[\t ]*(?:;.*)?$/;
+            var regex = /^[\t ]*(?:([.a-z]\w*)[:])?(?:[\t ]*([a-z]{2,4})(?:[\t ]+(byte))?(?:[\t ]+(\[(\w+((\+|-)\d+)?)\]|\".+?\"|\'.+?\'|[.a-z0-9]\w*)(?:[\t ]*[,][\t ]*(\[(\w+((\+|-)\d+)?)\]|\".+?\"|\'.+?\'|[.a-z0-9]\w*))?)?)?[\t ]*(?:;.*)?$/i;
 
             // Regex group indexes for operands
             var byte_group = 3;
