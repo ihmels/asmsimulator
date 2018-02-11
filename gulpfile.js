@@ -5,6 +5,7 @@ var jshint = require('gulp-jshint');
 var uglify = require('gulp-uglify');
 var zip = require('gulp-zip');
 var pkg = require('./package.json');
+var Server = require('karma').Server;
 
 var app = {
     html: [
@@ -82,5 +83,12 @@ gulp.task('compress', gulp.series('app', 'vendor', (done) => {
 
     done();
 }));
+
+gulp.task('test', (done) => {
+    new Server({
+      configFile: __dirname + '/karma.conf.js',
+      singleRun: true
+    }, done).start();
+});
 
 gulp.task('default', gulp.series('app', 'vendor'));
