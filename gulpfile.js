@@ -41,47 +41,62 @@ var dist = {
     fonts: 'public/fonts/'
 };
 
-gulp.task('clean', (done) => {
-    del('public/');
-    done();
+gulp.task('clean', () => {
+    return del('public/');
 });
 
-gulp.task('vendor', (done) => {
-    gulp.src(vendor.js)
+gulp.task('build:vendor:js', () => {
+    return gulp.src(vendor.js)
         .pipe(gulp.dest(dist.js));
-
-    gulp.src(vendor.css)
-        .pipe(gulp.dest(dist.css));
-
-    gulp.src(vendor.fonts)
-        .pipe(gulp.dest(dist.fonts));
-
-    done();
 });
 
-gulp.task('app', (done) => {
-    gulp.src(app.html)
-        .pipe(gulp.dest(dist.html));
+gulp.task('build:vendor:css', () => {
+    return gulp.src(vendor.css)
+        .pipe(gulp.dest(dist.css));
+});
 
-    gulp.src(app.js)
+gulp.task('build:vendor:fonts', () => {
+    return gulp.src(vendor.fonts)
+        .pipe(gulp.dest(dist.fonts));
+});
+
+gulp.task('build:vendor', gulp.parallel(
+    'build:vendor:js',
+    'build:vendor:css',
+    'build:vendor:fonts'
+));
+
+gulp.task('build:app:html', () => {
+    return gulp.src(app.html)
+        .pipe(gulp.dest(dist.html));
+});
+
+gulp.task('build:app:js', () => {
+    return gulp.src(app.js)
         .pipe(jshint())
         .pipe(jshint.reporter('default'))
         .pipe(concat('app.min.js'))
         .pipe(uglify())
         .pipe(gulp.dest(dist.js));
-
-    gulp.src(app.css)
-        .pipe(gulp.dest(dist.css));
-
-    done();
 });
 
-gulp.task('compress', gulp.series('app', 'vendor', (done) => {
-    gulp.src('public/**/*')
-        .pipe(zip('asmsimulator-' + pkg.version + '.zip'))
-        .pipe(gulp.dest('dist/'));
+gulp.task('build:app:css', () => {
+    return gulp.src(app.css)
+        .pipe(gulp.dest(dist.css));
+});
 
-    done();
+gulp.task('build:app', gulp.parallel(
+    'build:app:html',
+    'build:app:js',
+    'build:app:css'
+));
+
+gulp.task('default', gulp.parallel('build:vendor', 'build:app'));
+
+gulp.task('compress', gulp.series('default', () => {
+    return gulp.src('public/**/*')
+        .pipe(zip('asmsimulator-' + pkg.version + '.zip'))
+        .pipe(gulp.dest('./dist/'));
 }));
 
 gulp.task('test', (done) => {
@@ -90,5 +105,3 @@ gulp.task('test', (done) => {
       singleRun: true
     }, done).start();
 });
-
-gulp.task('default', gulp.series('app', 'vendor'));
